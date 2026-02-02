@@ -1,0 +1,2 @@
+
+public enum E_GameState {MENU, LEVEL_SELECTION, LOADING, IN_GAME, ENDED}
