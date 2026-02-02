@@ -54,32 +54,46 @@ public class MatchProcessor
     {
         if (currentMatch == null || currentMatch.Count == 0) return;
 
-        Vector2Int gridCenterPos = grid.GetPositionOf(currentMatch[0]);
 
-        if (gridCenterPos.x == -1)
+        // --- We need to determine the best pattern for the match ---
+        int maxH = 0;
+        int maxV = 0;
+        var posList = currentMatch.Select(item => grid.GetPositionOf(item)).ToList();
+
+        foreach (var p in posList)
         {
-            Debug.LogError("L'item du match n'a pas de position valide dans la grille !");
-            return;
+            int countH = posList.Count(other => other.y == p.y);
+            int countV = posList.Count(other => other.x == p.x);
+            if (countH > maxH) maxH = countH;
+            if (countV > maxV) maxV = countV;
         }
 
-        Vector3 popupWorldPos = controller.Visualizer.GetWorldPosition(gridCenterPos.x, gridCenterPos.y);
-
-        int baseScorePerCandy = 50;
-        int totalMatchScore = (currentMatch.Count * baseScorePerCandy) * comboCount;
-        GameServiceLocator.Get<IScoreService>().AddScore(totalMatchScore);
-
         MatchPattern bestPattern = null;
+        int longestLine = Mathf.Max(maxH, maxV);
+
         foreach (var pattern in controller.AvailablePatterns.OrderByDescending(p => p.priority))
         {
-            if (currentMatch.Count >= pattern.minCount)
+
+            if (longestLine >= pattern.minCount)
             {
                 bestPattern = pattern;
                 break;
             }
         }
 
+
+        // --- We calculate score and popup position ---
+        Vector2Int gridCenterPos = posList[0];
+        Vector3 popupWorldPos = controller.Visualizer.GetWorldPosition(gridCenterPos.x, gridCenterPos.y);
+
+        int baseScorePerCandy = 50;
+        int totalMatchScore = (currentMatch.Count * baseScorePerCandy) * comboCount;
+        GameServiceLocator.Get<IScoreService>().AddScore(totalMatchScore);
+
+        // Déterminer où le bonus doit apparaître
         Vector2Int spawnBonusPos = (bestPattern != null) ? GetSpawnPositionForBonus(currentMatch) : new Vector2Int(-1, -1);
 
+        // --- ÉTAPE 4 : Nettoyage de la grille ---
         foreach (GridItem c in currentMatch)
         {
             Vector2Int gridPos = grid.GetPositionOf(c);
@@ -91,7 +105,7 @@ public class MatchProcessor
                 if (overlay != null)
                 {
                     overlay.BreakLayer();
-
+                    // Si on casse un obstacle sur la case du bonus, on annule le spawn du bonus
                     if (gridPos == spawnBonusPos) spawnBonusPos = new Vector2Int(-1, -1);
                     continue;
                 }
@@ -100,9 +114,9 @@ public class MatchProcessor
             }
         }
 
+        // --- ÉTAPE 5 : Spawn du bonus ---
         if (bestPattern != null && spawnBonusPos.x != -1)
         {
-            Debug.Log($"Spawning {bestPattern.name} at {spawnBonusPos}");
             controller.Spawner.SpawnItem(spawnBonusPos.x, spawnBonusPos.y, bestPattern.bonusPrefab);
         }
 

@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   overlayName: Ice
   icon: {fileID: 21300000, guid: e211ac11b1cc7ff478de1b0452459b52, type: 3}
+  prefb: {fileID: 7342328436683370841, guid: 98829f6819e7ee642b2d33dce42109e3, type: 3}
   health: 1
   blocksMovement: 0

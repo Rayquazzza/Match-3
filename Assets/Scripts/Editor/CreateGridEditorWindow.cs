@@ -206,37 +206,38 @@ public class CreateGridEditorWindow : EditorWindow
 
         Event e = Event.current;
 
-        // --- 1. GESTION DES CLICS ---
+        // --- CLICK AND DRAG LOGIC ---
+
+
         if (tileRect.Contains(e.mousePosition))
         {
             if (e.type == EventType.MouseDown || e.type == EventType.MouseDrag)
             {
                 Undo.RecordObject(currentLevelData, "Paint Tile");
 
-                if (e.button == 1) // CLIC DROIT (Gomme)
+                if (e.button == 1) // Right click to erase
                 {
-                    // Si on gomme le layer de base
+                    
                     if (currentLayer == EditLayer.Base)
                     {
                         if (slot.baseItem != null)
                         {
-                            // 1er clic droit : on enlève l'item
+                            
                             slot.baseItem = null;
                         }
                         else
                         {
-                            // 2ème clic droit (sur vide) : on fait un TROU (isValid = false)
                             slot.isValid = false;
                         }
                     }
-                    else // Layer Overlay
+                    else 
                     {
                         slot.overlayItem = null;
                     }
                 }
-                else if (e.button == 0) // CLIC GAUCHE (Peindre)
+                else if (e.button == 0) // Left click to paint
                 {
-                    // Le clic gauche répare toujours le trou
+
                     slot.isValid = true;
 
                     if (currentLayer == EditLayer.Base) slot.baseItem = selectedBase;
@@ -248,33 +249,29 @@ public class CreateGridEditorWindow : EditorWindow
             }
         }
 
-        // --- 2. RENDU VISUEL DANS L'EDITEUR ---
+        // --- VISUALS ---
 
-        // Si la case est invalide (un trou), on la dessine en noir/gris foncé
+
         if (!slot.isValid)
         {
-            EditorGUI.DrawRect(tileRect, new Color(0.1f, 0.1f, 0.1f, 0.5f)); // Case sombre
-            return; // On n'affiche rien d'autre
+            EditorGUI.DrawRect(tileRect, new Color(0.1f, 0.1f, 0.1f, 0.5f)); 
+            return; 
         }
 
-        // Sinon, on dessine la case normale
         GUI.Box(tileRect, "", GUI.skin.button);
 
         float padding = 8f;
         Rect innerRect = new Rect(tileRect.x + padding, tileRect.y + padding, tileRect.width - (padding * 2), tileRect.height - (padding * 2));
 
-        // Dessin de l'Item de base
         if (slot.baseItem != null && slot.baseItem.icon != null)
         {
             GUI.DrawTexture(innerRect, AssetPreview.GetAssetPreview(slot.baseItem.icon), ScaleMode.ScaleToFit);
         }
-        // Si pas d'item de base mais case valide, on peut afficher un petit repère (optionnel)
         else
         {
             GUI.Label(innerRect, "Random", new GUIStyle() { alignment = TextAnchor.MiddleCenter, fontSize = 9, normal = { textColor = Color.gray } });
         }
 
-        // Dessin de l'Overlay
         if (showOverlays && slot.overlayItem != null && slot.overlayItem.icon != null)
         {
             float overlayPadding = padding + 4f;

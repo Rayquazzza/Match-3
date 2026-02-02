@@ -12,12 +12,120 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b91b6a68a4cd2944a8776d19d6ec560, type: 3}
   m_Name: Level_1
   m_EditorClassIdentifier: 
-  width: 0
-  height: 0
+  width: 6
+  height: 6
   maxMoves: 20
   modifiers: []
   goals:
     scoreToFirstStar: 10000
     scoreToSecondStar: 30000
     scoreToThirdStar: 50000
-  grid: []
+  grid:
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}

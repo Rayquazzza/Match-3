@@ -87,8 +87,8 @@ public class GridSwap
     }
 
 
-    //public void Dispose()
-    //{
-    //    GameServiceLocator.Get<IMoveService>().OnSwapAttempt -= HandleSwapAttempt;
-    //}
+    public void Dispose()
+    {
+        GameServiceLocator.Get<IMoveService>().OnSwapAttempt -= HandleSwapAttempt;
+    }
 }

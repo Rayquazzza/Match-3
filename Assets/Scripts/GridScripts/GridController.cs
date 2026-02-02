@@ -62,16 +62,17 @@ public class GridController : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {
+    {       
+
         SubscribeToEvents();
     }
 
     private void InitializeLevel(LevelData data)
     {
+        Debug.Log("Initializing Level: " + data.name);
         currentLevel = data;
         Grid = new GridData(data.width, data.height);
 
-        // --- Conversion du LevelSlot[] en bool[,] pour GridData ---
         bool[,] activeMap = new bool[data.width, data.height];
         for (int i = 0; i < data.grid.Length; i++)
         {
@@ -79,7 +80,16 @@ public class GridController : MonoBehaviour
             int y = i / data.width;
             activeMap[x, y] = data.grid[i].isValid;
         }
+        
         Grid.SetActiveCells(activeMap);
+
+        if (Grid.Width <= 0 || Grid.Height <= 0)
+        {
+            Debug.LogWarning("[GridController] La taille de la grille est à 0 ! Annulation de la génération.");
+            return;
+        }
+
+
         Visualizer = new GridVisualizer(this,data.width, data.height, spacing);
         Spawner = new GridSpawner(this, Grid);
         Processor = new MatchProcessor(this, Grid);
@@ -167,10 +177,10 @@ public class GridController : MonoBehaviour
     private void OnDestroy()
     {
         UnsubscribeFromEvents();
-        //if (Swap != null)
-        //{
-        //    Swap.Dispose();
-        //}
+        if (Swap != null)
+        {
+            Swap.Dispose();
+        }
     }
 
 
