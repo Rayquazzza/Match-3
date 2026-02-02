@@ -32,9 +32,18 @@ public class GridData
         allOverlays = new GridItem[width, height];
     }
 
+    public void SetActiveCells(bool[,] map)
+    {
+        this.activeCells = map;
+    }
+
     public bool IsValidPos(int x, int y)
     {
-       return x >= 0 && x < Width && y >= 0 && y < Height;
+        if (x < 0 || x >= Width || y < 0 || y >= Height) return false;
+
+        if (activeCells != null) return activeCells[x, y];
+
+        return true;
     }
 
     public bool IsValidPos(Vector2Int pos)

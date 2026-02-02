@@ -22,31 +22,41 @@ public class GridSpawner
         {
             for (int y = 0; y < grid.Height; y++)
             {
-
-                if (grid.AllItems[x, y] != null) continue;
+                // 1. SI LA CASE EST UN TROU OU DÉJÀ PLEINE, ON PASSE À LA SUIVANTE
+                if (!grid.IsValidPos(x, y) || grid.AllItems[x, y] != null) continue;
 
                 List<E_CandyType> possibleCandies = new List<E_CandyType>(allTypes);
 
+                // 2. VÉRIFICATION HORIZONTALE (avec sécurité null pour les trous)
                 if (x >= 2)
                 {
-                    E_CandyType left1 = grid.AllItems[x - 1, y].GetItemType();
-                    E_CandyType left2 = grid.AllItems[x - 2, y].GetItemType();
-                    if (left1 == left2) possibleCandies.Remove(left1);
+                    GridItem item1 = grid.AllItems[x - 1, y];
+                    GridItem item2 = grid.AllItems[x - 2, y];
+                    if (item1 != null && item2 != null)
+                    {
+                        E_CandyType type1 = item1.GetItemType();
+                        if (type1 == item2.GetItemType()) possibleCandies.Remove(type1);
+                    }
                 }
 
+                // 3. VÉRIFICATION VERTICALE (avec sécurité null pour les trous)
                 if (y >= 2)
                 {
-                    E_CandyType down1 = grid.AllItems[x, y - 1].GetItemType();
-                    E_CandyType down2 = grid.AllItems[x, y - 2].GetItemType();
-                    if (down1 == down2) possibleCandies.Remove(down1);
+                    GridItem item1 = grid.AllItems[x, y - 1];
+                    GridItem item2 = grid.AllItems[x, y - 2];
+                    if (item1 != null && item2 != null)
+                    {
+                        E_CandyType type1 = item1.GetItemType();
+                        if (type1 == item2.GetItemType()) possibleCandies.Remove(type1);
+                    }
                 }
 
                 E_CandyType chosenType = possibleCandies[Random.Range(0, possibleCandies.Count)];
-
-                controller.Spawner.SpawnCandy(x, y, chosenType);
+                SpawnCandy(x, y, chosenType);
             }
         }
 
+        // 4. VÉRIFICATION DE LA POSSIBILITÉ DE JOUER
         if (!controller.Match.IsMovePossible(grid.AllItems))
         {
             Debug.Log("Aucun coup possible, régénération...");
@@ -82,8 +92,7 @@ public class GridSpawner
 
     public void ClearAndRestart()
     {
-        DOTween.KillAll();
-        foreach (Candy c in grid.AllItems) if (c != null) c.Destroy();
+        ResetGrid();
         GenerateGrid();
     }
     public void SpawnItem(int x, int y, GameObject prefab)
@@ -101,6 +110,9 @@ public class GridSpawner
 
     public void SpawnCandy(int x, int y, E_CandyType type, bool isRefill = false)
     {
+        // Sécurité doublée
+        if (!grid.IsValidPos(x, y)) return;
+
         Vector3 targetPos = controller.Visualizer.GetWorldPosition(x, y);
         Vector3 spawnPos = targetPos;
 

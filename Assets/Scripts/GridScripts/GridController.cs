@@ -72,14 +72,14 @@ public class GridController : MonoBehaviour
         Grid = new GridData(data.width, data.height);
 
         // --- Conversion du LevelSlot[] en bool[,] pour GridData ---
-        //bool[,] activeMap = new bool[data.width, data.height];
-        //for (int i = 0; i < data.grid.Length; i++)
-        //{
-        //    int x = i % data.width;
-        //    int y = i / data.width;
-        //    activeMap[x, y] = data.grid[i].isValid;
-        //}
-        //Grid.SetActiveGrid(activeMap);
+        bool[,] activeMap = new bool[data.width, data.height];
+        for (int i = 0; i < data.grid.Length; i++)
+        {
+            int x = i % data.width;
+            int y = i / data.width;
+            activeMap[x, y] = data.grid[i].isValid;
+        }
+        Grid.SetActiveCells(activeMap);
         Visualizer = new GridVisualizer(this,data.width, data.height, spacing);
         Spawner = new GridSpawner(this, Grid);
         Processor = new MatchProcessor(this, Grid);
@@ -112,30 +112,40 @@ public class GridController : MonoBehaviour
     /// </summary>
     private void SetupBackground()
     {
-        // 1. Nettoyer l'ancien background
         if (bgParent != null)
         {
             foreach (Transform child in bgParent) Destroy(child.gameObject);
         }
 
-        // 2. Générer le background case par case
-        for (int i = 0; i < currentLevel.grid.Length; i++)
+        for (int x = 0; x < Grid.Width; x++)
         {
-            LevelSlot slot = currentLevel.grid[i];
-
-            // IMPORTANT : On ne crée un fond que si la case est VALID (pas un trou)
-            if (slot.isValid)
+            for (int y = 0; y < Grid.Height; y++)
             {
-                // On convertit l'index 1D en coordonnées X,Y
-                int x = i % currentLevel.width;
-                int y = i / currentLevel.width;
+                if (Grid.IsValidPos(x, y))
+                {
+                    Vector3 pos = Visualizer.GetWorldPosition(x, y);
+                    pos.z = 1f;
+                    GameObject bg = Instantiate(bgTilePrefab, pos, Quaternion.identity, bgParent);
 
-                Vector3 pos = Visualizer.GetWorldPosition(x, y);
-                pos.z = 1f; // On le met derrière les bonbons
+                    float padding = 1f; 
+                    bg.transform.localScale = new Vector3(spacing * padding, spacing * padding, 1);
 
-                GameObject bg = Instantiate(bgTilePrefab, pos, Quaternion.identity);
+                    bool up = Grid.IsValidPos(x, y + 1);
+                    bool down = Grid.IsValidPos(x, y - 1);
+                    bool left = Grid.IsValidPos(x - 1, y);
+                    bool right = Grid.IsValidPos(x + 1, y);
 
-                if (bgParent != null) bg.transform.SetParent(bgParent);
+                    bool tl = Grid.IsValidPos(x - 1, y + 1);
+                    bool tr = Grid.IsValidPos(x + 1, y + 1);
+                    bool bl = Grid.IsValidPos(x - 1, y - 1);
+                    bool br = Grid.IsValidPos(x + 1, y - 1);
+
+                    BackgroundTile tileScript = bg.GetComponent<BackgroundTile>();
+                    if (tileScript != null)
+                    {
+                        tileScript.UpdateVisual(up, down ,left, right, tl, tr, bl, br);
+                    }
+                }
             }
         }
     }
@@ -157,6 +167,10 @@ public class GridController : MonoBehaviour
     private void OnDestroy()
     {
         UnsubscribeFromEvents();
+        //if (Swap != null)
+        //{
+        //    Swap.Dispose();
+        //}
     }
 
 

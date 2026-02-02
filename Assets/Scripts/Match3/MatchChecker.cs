@@ -146,10 +146,23 @@ public class MatchChecker
     {
         if (x2 < 0 || x2 >= width || y2 < 0 || y2 >= height) return false;
 
-        E_CandyType candyType1 = allCandies[x1, y1].GetItemType();
-        E_CandyType candyType2 = allCandies[x2, y2].GetItemType();
+        // 2. On récupère les items
+        GridItem item1 = allCandies[x1, y1];
+        GridItem item2 = allCandies[x2, y2];
 
-        return TestPos(x1, y1, candyType2, x2, y2, allCandies) || TestPos(x2, y2, candyType1, x1, y1, allCandies);
+        // 3. SÉCURITÉ : Si l'une des cases est vide (un trou ou une case vide), 
+        // on ne peut pas faire de match ni de swap.
+        if (item1 == null || item2 == null) return false;
+
+        // 4. On vérifie s'ils sont déplaçables
+        if (!item1.IsMovable || !item2.IsMovable) return false;
+
+        // Maintenant on peut prendre les types sans risque de crash
+        E_CandyType candyType1 = item1.GetItemType();
+        E_CandyType candyType2 = item2.GetItemType();
+
+        return TestPos(x1, y1, candyType2, x2, y2, allCandies) ||
+               TestPos(x2, y2, candyType1, x1, y1, allCandies);
     }
 
     private bool TestPos(int x, int y, E_CandyType candyType, int skipX, int skipY, GridItem[,] allCandies)
