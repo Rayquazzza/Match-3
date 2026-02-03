@@ -11,7 +11,4 @@ public class GridItemData : ScriptableObject
     public string itemName;
     public GameObject prefab;
     public Sprite icon;       
-    public E_CandyType type;  
-
-    public int scoreValue = 10;
 }

@@ -146,18 +146,13 @@ public class MatchChecker
     {
         if (x2 < 0 || x2 >= width || y2 < 0 || y2 >= height) return false;
 
-        // 2. On récupère les items
         GridItem item1 = allCandies[x1, y1];
         GridItem item2 = allCandies[x2, y2];
 
-        // 3. SÉCURITÉ : Si l'une des cases est vide (un trou ou une case vide), 
-        // on ne peut pas faire de match ni de swap.
         if (item1 == null || item2 == null) return false;
 
-        // 4. On vérifie s'ils sont déplaçables
         if (!item1.IsMovable || !item2.IsMovable) return false;
 
-        // Maintenant on peut prendre les types sans risque de crash
         E_CandyType candyType1 = item1.GetItemType();
         E_CandyType candyType2 = item2.GetItemType();
 
@@ -173,13 +168,13 @@ public class MatchChecker
 
     private int Count(int x, int y, int dx, int dy, E_CandyType candyType, int skipX, int skipY, GridItem[,] allCandies)
     {
-        int c = 0;
+        int count = 0;
         for (int i = 1; i < 3; i++)
         {
             int nx = x + dx * i, ny = y + dy * i;
             if (nx < 0 || nx >= width || ny < 0 || ny >= height || (nx == skipX && ny == skipY)) break;
-            if (allCandies[nx, ny]?.GetItemType() == candyType) c++; else break;
+            if (allCandies[nx, ny]?.GetItemType() == candyType) count++; else break;
         }
-        return c;
+        return count;
     }
 }

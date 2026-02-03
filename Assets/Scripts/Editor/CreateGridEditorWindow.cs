@@ -153,7 +153,7 @@ public class CreateGridEditorWindow : EditorWindow
             isSelected = (currentLayer == EditLayer.Base ? selectedBase == null : selectedOverlay == null);
         else
         {
-            isSelected = (item == (ScriptableObject)selectedBase || item == (ScriptableObject)selectedOverlay);
+            isSelected = (item == selectedBase || item == selectedOverlay);
             if (item is GridItemData b) iconTex = AssetPreview.GetAssetPreview(b.icon);
             else if (item is OverlayItemData o) iconTex = AssetPreview.GetAssetPreview(o.icon);
         }

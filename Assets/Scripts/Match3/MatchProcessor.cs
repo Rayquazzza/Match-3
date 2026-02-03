@@ -58,7 +58,7 @@ public class MatchProcessor
         // --- We need to determine the best pattern for the match ---
         int maxH = 0;
         int maxV = 0;
-        var posList = currentMatch.Select(item => grid.GetPositionOf(item)).ToList();
+        List<Vector2Int> posList = currentMatch.Select(item => grid.GetPositionOf(item)).ToList();
 
         foreach (var p in posList)
         {
@@ -90,10 +90,8 @@ public class MatchProcessor
         int totalMatchScore = (currentMatch.Count * baseScorePerCandy) * comboCount;
         GameServiceLocator.Get<IScoreService>().AddScore(totalMatchScore);
 
-        // Déterminer où le bonus doit apparaître
         Vector2Int spawnBonusPos = (bestPattern != null) ? GetSpawnPositionForBonus(currentMatch) : new Vector2Int(-1, -1);
 
-        // --- ÉTAPE 4 : Nettoyage de la grille ---
         foreach (GridItem c in currentMatch)
         {
             Vector2Int gridPos = grid.GetPositionOf(c);
@@ -105,7 +103,7 @@ public class MatchProcessor
                 if (overlay != null)
                 {
                     overlay.BreakLayer();
-                    // Si on casse un obstacle sur la case du bonus, on annule le spawn du bonus
+
                     if (gridPos == spawnBonusPos) spawnBonusPos = new Vector2Int(-1, -1);
                     continue;
                 }
@@ -114,7 +112,6 @@ public class MatchProcessor
             }
         }
 
-        // --- ÉTAPE 5 : Spawn du bonus ---
         if (bestPattern != null && spawnBonusPos.x != -1)
         {
             controller.Spawner.SpawnItem(spawnBonusPos.x, spawnBonusPos.y, bestPattern.bonusPrefab);

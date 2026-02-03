@@ -5,10 +5,8 @@ using UnityEngine;
 public class PoolManager : MonoBehaviour, IPoolingService
 {
 
-    // Dictionary to hold pools for different prefabs
     private Dictionary<int, Queue<GameObject>> poolDictionary = new Dictionary<int, Queue<GameObject>>();
 
-    // Optional: List of prefabs to prewarm at start
     [SerializeField] private List<PoolPrewarmConfig> objectsToPrewarm;
 
 
@@ -24,7 +22,6 @@ public class PoolManager : MonoBehaviour, IPoolingService
             ReturnToPool(prefab, obj);
         }
 
-        // Prewarm specified objects
         foreach (var item in objectsToPrewarm)
         {
             Prewarm(item.prefab, item.amount);
