@@ -13,10 +13,9 @@ public class IceOverlay : GridItem
         Debug.Log("Ice overlay broken at " + transform.position);
         GameServiceLocator.Get<IEffectService>().PlayExplosion(transform.position);
 
-        // On se retire du tableau des overlays
         Vector2Int pos = grid.GetPositionOf(this);
             
-        if (pos.x != -1) // Si on a bien trouvé la position
+        if (pos.x != -1) 
         {
             grid.ClearOverlayAt(pos.x, pos.y);
         }

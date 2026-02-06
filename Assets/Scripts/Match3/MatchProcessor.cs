@@ -10,7 +10,7 @@ public class MatchProcessor
     private MatchChecker matchChecker;
     private int comboCount = 0;
 
-    public MatchProcessor(GridController controller,GridData grid)
+    public MatchProcessor(GridController controller, GridData grid)
     {
         this.controller = controller;
         this.grid = grid;
@@ -37,7 +37,6 @@ public class MatchProcessor
                 }
 
                 yield return new WaitForSeconds(0.2f);
-
                 yield return controller.StartCoroutine(controller.Shifter.ShiftAndRefill());
             }
             else
@@ -46,6 +45,24 @@ public class MatchProcessor
             }
         }
 
+
+        // --- SUFFLE LOGIC ---
+        int safetyBreak = 0;
+        while (!controller.Match.IsMovePossible(grid.AllItems) && safetyBreak < 5)
+        {
+            yield return controller.StartCoroutine(controller.Spawner.ShuffleGrid());
+            safetyBreak++;
+        }
+
+        if (!controller.Match.IsMovePossible(grid.AllItems))
+        {
+            Debug.Log("Plus aucun coup possible. Reset total.");
+            controller.Spawner.ClearAndRestart();
+        }
+        // --------------------
+
+
+        // End of processing
         GameServiceLocator.Get<IMoveService>().UseMove();
         controller.SetIsProcessing(false);
     }
@@ -54,70 +71,59 @@ public class MatchProcessor
     {
         if (currentMatch == null || currentMatch.Count == 0) return;
 
+        MatchResult result = AnalyzeMatch(currentMatch);
 
-        // --- We need to determine the best pattern for the match ---
-        int maxH = 0;
-        int maxV = 0;
-        List<Vector2Int> posList = currentMatch.Select(item => grid.GetPositionOf(item)).ToList();
+        int totalMatchScore = (result.Items.Count * 50) * comboCount;
+        GameServiceLocator.Get<IScoreService>().AddScore(totalMatchScore);
+
+        Vector2Int firstItemGridPos = grid.GetPositionOf(result.Items[0]);
+        Vector3 popupPos = controller.Visualizer.GetWorldPosition(firstItemGridPos.x, firstItemGridPos.y);
+
+        GameServiceLocator.Get<IEffectService>().ShowScorePopup(popupPos, totalMatchScore);
+
+        foreach (GridItem c in result.Items)
+        {
+            Vector2Int gridPos = grid.GetPositionOf(c);
+            if (gridPos.x == -1) continue;
+
+            NotifyNeighbors(gridPos);
+
+            GridItem overlay = grid.GetOverlay(gridPos.x, gridPos.y);
+            if (overlay != null)
+            {
+                overlay.BreakLayer();
+
+                if (gridPos == result.SpawnPos) result.SpawnPos = new Vector2Int(-1, -1);
+                continue;
+            }
+
+            grid.ClearMatchAt(gridPos.x, gridPos.y);
+        }
+
+        if (result.CanSpawnBonus)
+        {
+            controller.Spawner.SpawnItem(result.SpawnPos.x, result.SpawnPos.y, result.Pattern.bonusPrefab);
+        }
+    }
+
+    private MatchResult AnalyzeMatch(List<GridItem> match)
+    {
+        int maxH = 0, maxV = 0;
+        List<Vector2Int> posList = match.Select(item => grid.GetPositionOf(item)).ToList();
 
         foreach (var p in posList)
         {
-            int countH = posList.Count(other => other.y == p.y);
-            int countV = posList.Count(other => other.x == p.x);
-            if (countH > maxH) maxH = countH;
-            if (countV > maxV) maxV = countV;
+            maxH = Mathf.Max(maxH, posList.Count(other => other.y == p.y));
+            maxV = Mathf.Max(maxV, posList.Count(other => other.x == p.x));
         }
 
-        MatchPattern bestPattern = null;
         int longestLine = Mathf.Max(maxH, maxV);
 
-        foreach (var pattern in controller.AvailablePatterns.OrderByDescending(p => p.priority))
-        {
+        MatchPattern bestPattern = controller.AvailablePatterns.OrderByDescending(p => p.priority).FirstOrDefault(p => longestLine >= p.minCount);
 
-            if (longestLine >= pattern.minCount)
-            {
-                bestPattern = pattern;
-                break;
-            }
-        }
+        Vector2Int spawnPos = (bestPattern != null) ? GetSpawnPositionForBonus(match) : new Vector2Int(-1, -1);
 
-
-        // --- We calculate score and popup position ---
-        Vector2Int gridCenterPos = posList[0];
-        Vector3 popupWorldPos = controller.Visualizer.GetWorldPosition(gridCenterPos.x, gridCenterPos.y);
-
-        int baseScorePerCandy = 50;
-        int totalMatchScore = (currentMatch.Count * baseScorePerCandy) * comboCount;
-        GameServiceLocator.Get<IScoreService>().AddScore(totalMatchScore);
-
-        Vector2Int spawnBonusPos = (bestPattern != null) ? GetSpawnPositionForBonus(currentMatch) : new Vector2Int(-1, -1);
-
-        foreach (GridItem c in currentMatch)
-        {
-            Vector2Int gridPos = grid.GetPositionOf(c);
-            if (gridPos.x != -1)
-            {
-                NotifyNeighbors(gridPos);
-
-                GridItem overlay = grid.GetOverlay(gridPos.x, gridPos.y);
-                if (overlay != null)
-                {
-                    overlay.BreakLayer();
-
-                    if (gridPos == spawnBonusPos) spawnBonusPos = new Vector2Int(-1, -1);
-                    continue;
-                }
-
-                grid.ClearMatchAt(gridPos.x, gridPos.y);
-            }
-        }
-
-        if (bestPattern != null && spawnBonusPos.x != -1)
-        {
-            controller.Spawner.SpawnItem(spawnBonusPos.x, spawnBonusPos.y, bestPattern.bonusPrefab);
-        }
-
-        GameServiceLocator.Get<IEffectService>().ShowScorePopup(popupWorldPos, totalMatchScore);
+        return new MatchResult(match, bestPattern, spawnPos);
     }
 
     private void NotifyNeighbors(Vector2Int pos)

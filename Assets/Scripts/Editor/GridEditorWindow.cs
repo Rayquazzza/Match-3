@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class CreateGridEditorWindow : EditorWindow
+public class GridEditorWindow : EditorWindow
 {
     private LevelData currentLevelData;
 
@@ -16,29 +16,34 @@ public class CreateGridEditorWindow : EditorWindow
 
     private Vector2 scrollPos;
     private Vector2 paletteScrollPos;
+    private Vector2 mainWindowScrollPos;
 
     private int tempWidth;
     private int tempHeight;
     private bool dimensionsInitialized = false;
 
+
+    private List<CandyItemData> allCandyTypes = new List<CandyItemData>();
+
     private enum EditLayer { Base, Overlay }
     private EditLayer currentLayer = EditLayer.Base;
 
-    private GUISkin myCustomSkin;
+    private GUISkin customSkin;
 
     [MenuItem("Tools/Level Editor")]
     public static void OpenWindow()
     {
-        CreateGridEditorWindow window = GetWindow<CreateGridEditorWindow>("Level Editor");
+        GridEditorWindow window = GetWindow<GridEditorWindow>("Level Editor");
         window.minSize = new Vector2(450, 600);
         window.Show();
-        window.LoadAllItems();
+        
     }
 
 
     private void OnEnable()
     {
-        myCustomSkin = AssetDatabase.LoadAssetAtPath<GUISkin>("Assets/Editor/GUISkin/MyEditorSkin.guiskin");
+        customSkin = AssetDatabase.LoadAssetAtPath<GUISkin>("Assets/Editor/GUISkin/MyEditorSkin.guiskin");
+        LoadAllItems();
     }
 
 
@@ -46,6 +51,11 @@ public class CreateGridEditorWindow : EditorWindow
     {
         allBaseItems.Clear();
         allOverlays.Clear();
+        allCandyTypes.Clear();
+
+        string[] candyGuids = AssetDatabase.FindAssets("t:CandyItemData");
+        foreach (var guid in candyGuids)
+            allCandyTypes.Add(AssetDatabase.LoadAssetAtPath<CandyItemData>(AssetDatabase.GUIDToAssetPath(guid)));
 
         string[] baseGuids = AssetDatabase.FindAssets("t:GridItemData");
         foreach (var guid in baseGuids)
@@ -58,7 +68,7 @@ public class CreateGridEditorWindow : EditorWindow
 
     public static void OpenWithConfig(LevelData data)
     {
-        CreateGridEditorWindow window = GetWindow<CreateGridEditorWindow>("Level Editor");
+        GridEditorWindow window = GetWindow<GridEditorWindow>("Level Editor");
         window.currentLevelData = data;
         window.dimensionsInitialized = false;
         window.Show();
@@ -66,32 +76,33 @@ public class CreateGridEditorWindow : EditorWindow
 
     private void OnGUI()
     {
-
         Rect windowRect = new Rect(0, 0, position.width, position.height);
         EditorGUI.DrawRect(windowRect, new Color(0.12f, 0.12f, 0.12f));
 
-        if (myCustomSkin != null)
-        {
-            GUI.skin = myCustomSkin;
-        }
-
-
+        if (customSkin != null) GUI.skin = customSkin;
         DrawHeader();
+
+        mainWindowScrollPos = EditorGUILayout.BeginScrollView(mainWindowScrollPos);
 
         if (currentLevelData == null)
         {
             currentLevelData = (LevelData)EditorGUILayout.ObjectField("Niveau à éditer", currentLevelData, typeof(LevelData), false);
             if (GUILayout.Button("Rafraîchir la liste des Items")) LoadAllItems();
+            EditorGUILayout.EndScrollView(); 
             return;
         }
 
         DrawConfigSection();
         EditorGUILayout.Space(10);
+
+        DrawAvailableCandiesSelection(); 
+
+        EditorGUILayout.Space(10);
         DrawVisualPalette();
         EditorGUILayout.Space(10);
 
-        scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
         DrawGrid();
+
         EditorGUILayout.EndScrollView();
 
         if (Event.current.type == EventType.MouseDrag) Repaint();
@@ -280,7 +291,6 @@ public class CreateGridEditorWindow : EditorWindow
         }
     }
 
-
     /// <summary>
     /// Draw the configuration section of the editor window.
     /// </summary>
@@ -404,5 +414,38 @@ public class CreateGridEditorWindow : EditorWindow
         }
         EditorUtility.SetDirty(currentLevelData);
         AssetDatabase.SaveAssets();
+    }
+
+    private void DrawAvailableCandiesSelection()
+    {
+        GUILayout.BeginVertical("box");
+        DrawSectionTitle("BONBONS AUTORISÉS DANS CE NIVEAU", "FilterByType");
+
+        EditorGUILayout.HelpBox("Clique sur les bonbons pour les inclure dans le tirage aléatoire du niveau.", MessageType.Info);
+
+        EditorGUILayout.BeginHorizontal();
+        foreach (var candy in allCandyTypes)
+        {
+            bool isIncluded = currentLevelData.availableCandies.Contains(candy);
+
+            GUI.backgroundColor = isIncluded ? Color.green : Color.gray;
+
+            if (GUILayout.Button(AssetPreview.GetAssetPreview(candy.icon), GUILayout.Width(50), GUILayout.Height(50)))
+            {
+                Undo.RecordObject(currentLevelData, "Toggle Candy Availability");
+                if (isIncluded) currentLevelData.availableCandies.Remove(candy);
+                else currentLevelData.availableCandies.Add(candy);
+                EditorUtility.SetDirty(currentLevelData);
+            }
+        }
+        GUI.backgroundColor = Color.white;
+        EditorGUILayout.EndHorizontal();
+
+        if (currentLevelData.availableCandies.Count == 0)
+        {
+            EditorGUILayout.HelpBox("ATTENTION : Aucun bonbon n'est sélectionné. Le spawn sera vide !", MessageType.Error);
+        }
+
+        GUILayout.EndVertical();
     }
 }

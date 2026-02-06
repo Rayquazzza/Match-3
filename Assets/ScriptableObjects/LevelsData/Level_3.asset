@@ -10,21 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1b91b6a68a4cd2944a8776d19d6ec560, type: 3}
-  m_Name: Level_1
+  m_Name: Level_3
   m_EditorClassIdentifier: 
   width: 5
   height: 5
-  levelID: 1
+  levelID: 3
   maxMoves: 10
   modifiers: []
   goals:
-    scoreToFirstStar: 2000
-    scoreToSecondStar: 5000
+    scoreToFirstStar: 7500
+    scoreToSecondStar: 9000
     scoreToThirdStar: 10000
   availableCandies:
-  - {fileID: 11400000, guid: 8d62a3ce4007b3141abb7e7a162bb54c, type: 2}
   - {fileID: 11400000, guid: 4a46962214dd7504f91038402e8bb165, type: 2}
   - {fileID: 11400000, guid: a13e0d9dc0e56b2419f1fd116afbe99c, type: 2}
+  - {fileID: 11400000, guid: 8d62a3ce4007b3141abb7e7a162bb54c, type: 2}
   specialItems: []
   grid:
   - isValid: 1
@@ -46,20 +46,14 @@ MonoBehaviour:
     baseItem: {fileID: 0}
     overlayItem: {fileID: 0}
   - isValid: 1
-    baseItem: {fileID: 11400000, guid: 69c4b2a365bc5ba409d0d1de152f334a, type: 2}
-    overlayItem: {fileID: 0}
-  - isValid: 1
     baseItem: {fileID: 0}
-    overlayItem: {fileID: 0}
-  - isValid: 1
-    baseItem: {fileID: 11400000, guid: 69c4b2a365bc5ba409d0d1de152f334a, type: 2}
-    overlayItem: {fileID: 0}
+    overlayItem: {fileID: 11400000, guid: d0ede40143fec0e438ee9bd314463d0a, type: 2}
   - isValid: 1
     baseItem: {fileID: 0}
     overlayItem: {fileID: 0}
   - isValid: 1
     baseItem: {fileID: 0}
-    overlayItem: {fileID: 0}
+    overlayItem: {fileID: 11400000, guid: d0ede40143fec0e438ee9bd314463d0a, type: 2}
   - isValid: 1
     baseItem: {fileID: 0}
     overlayItem: {fileID: 0}
@@ -76,14 +70,20 @@ MonoBehaviour:
     baseItem: {fileID: 0}
     overlayItem: {fileID: 0}
   - isValid: 1
-    baseItem: {fileID: 11400000, guid: 69c4b2a365bc5ba409d0d1de152f334a, type: 2}
+    baseItem: {fileID: 0}
     overlayItem: {fileID: 0}
   - isValid: 1
     baseItem: {fileID: 0}
     overlayItem: {fileID: 0}
   - isValid: 1
-    baseItem: {fileID: 11400000, guid: 69c4b2a365bc5ba409d0d1de152f334a, type: 2}
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 11400000, guid: d0ede40143fec0e438ee9bd314463d0a, type: 2}
+  - isValid: 1
+    baseItem: {fileID: 0}
     overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 11400000, guid: d0ede40143fec0e438ee9bd314463d0a, type: 2}
   - isValid: 1
     baseItem: {fileID: 0}
     overlayItem: {fileID: 0}

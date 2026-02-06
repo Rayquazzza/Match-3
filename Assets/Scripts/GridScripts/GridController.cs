@@ -3,9 +3,11 @@ using UnityEngine;
 
 public class GridController : MonoBehaviour
 {
+    [Space(10)]
+    [Header("MATCH PATTERNS")]
     [SerializeField] public List<MatchPattern> AvailablePatterns = new List<MatchPattern>();
 
-    private LevelData currentLevel;
+    public LevelData CurrentLevel { get; private set; }
 
 
     [Space(10)]
@@ -70,7 +72,7 @@ public class GridController : MonoBehaviour
     private void InitializeLevel(LevelData data)
     {
         Debug.Log("Initializing Level: " + data.name);
-        currentLevel = data;
+        CurrentLevel = data;
         Grid = new GridData(data.width, data.height);
 
         bool[,] activeMap = new bool[data.width, data.height];
@@ -99,10 +101,10 @@ public class GridController : MonoBehaviour
 
         Spawner.ResetGrid();
 
-        //Setup level grid
-        currentLevel.SetupGrid(this);
 
         SetupBackground();
+
+        Camera.main.GetComponent<CameraFitter>().FitCameraToGrid(data.width, data.height,spacing);
     }
 
     /// <summary>

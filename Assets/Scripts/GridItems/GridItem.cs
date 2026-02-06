@@ -8,7 +8,7 @@ public abstract class GridItem : MonoBehaviour
     public abstract bool IsMovable { get; }
     public abstract bool IsMatchable { get; }
 
-    [SerializeField] protected E_CandyType candyType;
+    [SerializeField] protected CandyItemData candyType;
 
     public virtual void Init(GridController gridController)
     {
@@ -21,7 +21,10 @@ public abstract class GridItem : MonoBehaviour
         // Empty by default
     }
 
-    public virtual E_CandyType GetItemType() => candyType;
+    public virtual CandyItemData GetItemType()
+    {
+        return candyType;
+    }
 
     public virtual void OnDestroyItem()
     {
@@ -33,6 +36,7 @@ public abstract class GridItem : MonoBehaviour
                 GetComponent<PoolMember>().ReturnToPool();
             });
     }
+
     public virtual void BreakLayer()
     {
         // Empty by default

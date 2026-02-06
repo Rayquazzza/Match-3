@@ -6,7 +6,6 @@ using UnityEngine;
 public class Candy : GridItem
 {
     [SerializeField] protected SpriteRenderer spriteRenderer;
-    [SerializeField] protected CandyData candyData;
 
     private Vector3 initialScale;
     private bool hasCachedScale = false;
@@ -44,13 +43,13 @@ public class Candy : GridItem
         }
     }
 
-    public void SetType(E_CandyType type)
+    public void SetType(CandyItemData type)
     {
         candyType = type;
 
-        if (spriteRenderer != null && candyData != null)
+        if (spriteRenderer != null && candyType != null)
         {
-            spriteRenderer.sprite = candyData.GetSpriteForType(type);
+            spriteRenderer.sprite = candyType.icon;
         }
     }
 

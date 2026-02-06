@@ -17,12 +17,19 @@ public class LevelData : ScriptableObject
     public int width = 4;
     public int height = 8;
 
+    public int levelID;
+
+
 
     public int maxMoves = 10;
 
     public List<GridModifier> modifiers;
 
     public LevelGoals goals;
+
+    public List<CandyItemData> availableCandies;
+
+    public List<GridItemData> specialItems;
 
 
     public void SetupGrid(GridController grid)

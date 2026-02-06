@@ -427,6 +427,7 @@ GameObject:
   - component: {fileID: 5604746928918657274}
   - component: {fileID: 7379319652534076393}
   - component: {fileID: 5967166652247863664}
+  - component: {fileID: -1524633485548711469}
   m_Layer: 0
   m_Name: BUTTON LEVEL
   m_TagString: Untagged
@@ -550,3 +551,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelData: {fileID: 0}
+  unlockedColor: {r: 1, g: 1, b: 1, a: 1}
+  lockedColor: {r: 0, g: 0, b: 0, a: 1}
+  levelNumberText: {fileID: 5292344771715135155}
+  starIcons:
+  - {fileID: 6233309105745482088}
+  - {fileID: 729916678293548901}
+  - {fileID: 1488075371743182008}
+--- !u!225 &-1524633485548711469
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7189185665585036326}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0

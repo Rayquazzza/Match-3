@@ -6,7 +6,7 @@ public class ColorCandy : Candy
 {
 
     // Cette méthode est appelée par le GridGenerator
-    public void ExecuteColorEffect(E_CandyType candyType)
+    public void ExecuteColorEffect(CandyItemData candyType)
     {
         // Grâce à l'injection, le bonbon dit à la grille quoi faire
         grid.ClearColor(candyType);
@@ -20,7 +20,7 @@ public class ColorCandy : Candy
     public override bool TriggerSpecialEffect(Candy swappedWith)
     {
         // La ColorCandy s'auto-exécute avec l'ID du bonbon avec lequel elle a switché
-        E_CandyType targetID = swappedWith.GetItemType();
+        CandyItemData targetID = swappedWith.GetItemType();
 
         // On nettoie la grille
         grid.ClearColor(targetID);

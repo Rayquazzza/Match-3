@@ -5,7 +5,7 @@ public class OverlayItemData : ScriptableObject
 {
     public string overlayName;
     public Sprite icon;
-    public GameObject prefb;
+    public GameObject prefab;
     public int health = 1;
     public bool blocksMovement;
 }

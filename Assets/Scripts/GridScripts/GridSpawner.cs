@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -16,52 +17,86 @@ public class GridSpawner
 
     public void GenerateGrid()
     {
-        E_CandyType[] allTypes = System.Array.FindAll((E_CandyType[])System.Enum.GetValues(typeof(E_CandyType)), t => t != E_CandyType.None);
+        List<CandyItemData> allTypes = new List<CandyItemData>();
+
+
+        foreach (var item in controller.CurrentLevel.availableCandies)
+        {
+            if (item != null)
+            {
+                allTypes.Add(item);
+            }
+        }
 
         for (int x = 0; x < grid.Width; x++)
         {
             for (int y = 0; y < grid.Height; y++)
             {
-                // 1. SI LA CASE EST UN TROU OU DÉJÀ PLEINE, ON PASSE À LA SUIVANTE
-                if (!grid.IsValidPos(x, y) || grid.AllItems[x, y] != null) continue;
+                int dataIndex = y * grid.Width + x;
+                var slotData = controller.CurrentLevel.grid[dataIndex];
 
-                List<E_CandyType> possibleCandies = new List<E_CandyType>(allTypes);
+                if (!slotData.isValid) continue;
 
-                // 2. VÉRIFICATION HORIZONTALE (avec sécurité null pour les trous)
-                if (x >= 2)
+                if (slotData.baseItem != null)
                 {
-                    GridItem item1 = grid.AllItems[x - 1, y];
-                    GridItem item2 = grid.AllItems[x - 2, y];
-                    if (item1 != null && item2 != null)
+                    if (slotData.baseItem is CandyItemData specificCandy)
                     {
-                        E_CandyType type1 = item1.GetItemType();
-                        if (type1 == item2.GetItemType()) possibleCandies.Remove(type1);
+                        SpawnCandy(x, y, specificCandy);
+                    }
+                    else
+                    {
+                        SpawnItem(x, y, slotData.baseItem.prefab);
                     }
                 }
-
-                // 3. VÉRIFICATION VERTICALE (avec sécurité null pour les trous)
-                if (y >= 2)
+                else
                 {
-                    GridItem item1 = grid.AllItems[x, y - 1];
-                    GridItem item2 = grid.AllItems[x, y - 2];
-                    if (item1 != null && item2 != null)
-                    {
-                        E_CandyType type1 = item1.GetItemType();
-                        if (type1 == item2.GetItemType()) possibleCandies.Remove(type1);
-                    }
+                    List<CandyItemData> possibleCandies = GetValidRandomCandies(x, y, allTypes);
+                    CandyItemData chosenType = possibleCandies[Random.Range(0, possibleCandies.Count)];
+                    SpawnCandy(x, y, chosenType);
                 }
 
-                E_CandyType chosenType = possibleCandies[Random.Range(0, possibleCandies.Count)];
-                SpawnCandy(x, y, chosenType);
+                if (slotData.overlayItem != null)
+                {
+                    SpawnOverlay(x, y, slotData.overlayItem.prefab);
+                }
             }
         }
 
-        // 4. VÉRIFICATION DE LA POSSIBILITÉ DE JOUER
         if (!controller.Match.IsMovePossible(grid.AllItems))
         {
             Debug.Log("Aucun coup possible, régénération...");
             ClearAndRestart();
         }
+    }
+
+
+    private List<CandyItemData> GetValidRandomCandies(int x, int y, List<CandyItemData> pool)
+    {
+        List<CandyItemData> possible = new List<CandyItemData>(pool);
+
+        if (x >= 2)
+        {
+            var item1 = grid.AllItems[x - 1, y];
+            var item2 = grid.AllItems[x - 2, y];
+            if (item1 != null && item2 != null)
+            {
+                var type1 = item1.GetItemType(); 
+                if (type1 == item2.GetItemType()) possible.Remove(type1);
+            }
+        }
+
+        if (y >= 2)
+        {
+            var item1 = grid.AllItems[x, y - 1];
+            var item2 = grid.AllItems[x, y - 2];
+            if (item1 != null && item2 != null)
+            {
+                var type1 = item1.GetItemType();
+                if (type1 == item2.GetItemType()) possible.Remove(type1);
+            }
+        }
+
+        return possible;
     }
 
     public void ResetGrid()
@@ -108,9 +143,8 @@ public class GridSpawner
         grid.SetItem(x, y, item);
     }
 
-    public void SpawnCandy(int x, int y, E_CandyType type, bool isRefill = false)
+    public void SpawnCandy(int x, int y, CandyItemData type, bool isRefill = false)
     {
-        // Sécurité doublée
         if (!grid.IsValidPos(x, y)) return;
 
         Vector3 targetPos = controller.Visualizer.GetWorldPosition(x, y);
@@ -147,5 +181,42 @@ public class GridSpawner
         item.Init(controller);
 
         grid.SetOverlay(x, y, item);
+    }
+
+    public IEnumerator ShuffleGrid()
+    {
+        List<GridItem> itemsToShuffle = new List<GridItem>();
+        List<Vector2Int> availablePositions = new List<Vector2Int>();
+
+        for (int x = 0; x < grid.Width; x++)
+        {
+            for (int y = 0; y < grid.Height; y++)
+            {
+                GridItem item = grid.AllItems[x, y];
+                if (item != null && item.IsMovable && grid.GetOverlay(x, y) == null)
+                {
+                    itemsToShuffle.Add(item);
+                    availablePositions.Add(new Vector2Int(x, y));
+                    grid.AllItems[x, y] = null;
+                }
+            }
+        }
+
+        for (int i = 0; i < availablePositions.Count; i++)
+        {
+            Vector2Int temp = availablePositions[i];
+            int randomIndex = Random.Range(i, availablePositions.Count);
+            availablePositions[i] = availablePositions[randomIndex];
+            availablePositions[randomIndex] = temp;
+        }
+
+        for (int i = 0; i < itemsToShuffle.Count; i++)
+        {
+            Vector2Int newPos = availablePositions[i];
+            grid.AllItems[newPos.x, newPos.y] = itemsToShuffle[i];
+            controller.Visualizer.MoveItem(itemsToShuffle[i], newPos.x, newPos.y, 0.5f);
+        }
+
+        yield return new WaitForSeconds(0.5f);
     }
 }

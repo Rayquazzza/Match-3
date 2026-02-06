@@ -56,6 +56,8 @@ public class TransitionUI : MonoBehaviour
         {
             img.sprite = allCandySprites[Random.Range(0, allCandySprites.Length)];
             img.transform.localScale = Vector3.one;
+            img.type = Image.Type.Simple;
+            img.preserveAspect = true;
         }
 
         while (visualRoot.activeSelf == true)

@@ -15,6 +15,10 @@ public class GameService : MonoBehaviour
 
     private IUIService UIService;
 
+
+    [SerializeField] private bool ResetSaveProgressOnAwake = false;
+
+
     private void Awake()
     {
         gameStateService = new GameStateService();
@@ -27,6 +31,11 @@ public class GameService : MonoBehaviour
 
         scoreService.Init();
 
+        if (ResetSaveProgressOnAwake)
+        {
+            levelService.ResetProgress();
+        }
+
     }
 
 
@@ -36,10 +45,19 @@ public class GameService : MonoBehaviour
         GameServiceLocator.Get<IMoveService>().OnOutOfMoves += OnMovesDepleted;
     }
 
+    
+
 
     private void OnMovesDepleted()
     {
-        GameServiceLocator.Get<ITransitionService>().TransitionToState(E_GameState.LEVEL_SELECTION);
+        int finalScore = scoreService.Score;
+        LevelData currentLevel = levelService.CurrentLevelData;
+
+        int stars = currentLevel.goals.GetStarsEarned(finalScore);
+
+        levelService.SaveLevelProgress(currentLevel.levelID, stars);
+
+        gameStateService.ChangeGameState(E_GameState.GAME_ENDED);
     }
 
     private void OnDestroy()

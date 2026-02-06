@@ -72,9 +72,9 @@ public class GridShifter
             {
                 if (grid.AllItems[x, y] == null)
                 {
-                    E_CandyType[] candyTypeList = System.Array.FindAll((E_CandyType[])System.Enum.GetValues(typeof(E_CandyType)), t => t != E_CandyType.None);
+                    List<CandyItemData> candyTypeList = controller.CurrentLevel.availableCandies.Where(c => c != null).ToList();
 
-                    E_CandyType chosenType = candyTypeList[Random.Range(0, candyTypeList.Length)];
+                    CandyItemData chosenType = candyTypeList[Random.Range(0, candyTypeList.Count)];
 
 
                     controller.Spawner.SpawnCandy(x, y, chosenType);

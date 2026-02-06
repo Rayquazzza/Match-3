@@ -12,4 +12,9 @@ public interface ILevelService
     public void LoadLevelData(LevelData levelData);
 
     void LoadLevelData(LevelData levelData, E_GameState gameState);
+
+    void SaveLevelProgress(int levelID, int starsEarned);
+
+
+    void ResetProgress();
 }

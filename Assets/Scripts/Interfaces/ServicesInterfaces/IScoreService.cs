@@ -8,4 +8,6 @@ public interface IScoreService
     void Init();
     public void Unregister();
 
+    public int Score { get; }
+
 }

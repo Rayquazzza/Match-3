@@ -25,7 +25,7 @@ public class MatchChecker
               
                 if (current == null || !current.IsMatchable) continue;
 
-                E_CandyType currentId = current.GetItemType();
+                CandyItemData currentId = current.GetItemType();
 
                 if (x < width - 2)
                 {
@@ -153,20 +153,20 @@ public class MatchChecker
 
         if (!item1.IsMovable || !item2.IsMovable) return false;
 
-        E_CandyType candyType1 = item1.GetItemType();
-        E_CandyType candyType2 = item2.GetItemType();
+        CandyItemData candyType1 = item1.GetItemType();
+        CandyItemData candyType2 = item2.GetItemType();
 
         return TestPos(x1, y1, candyType2, x2, y2, allCandies) ||
                TestPos(x2, y2, candyType1, x1, y1, allCandies);
     }
 
-    private bool TestPos(int x, int y, E_CandyType candyType, int skipX, int skipY, GridItem[,] allCandies)
+    private bool TestPos(int x, int y, CandyItemData candyType, int skipX, int skipY, GridItem[,] allCandies)
     {
         return (Count(x, y, 1, 0, candyType, skipX, skipY, allCandies) + Count(x, y, -1, 0, candyType, skipX, skipY, allCandies) >= 2) ||
                (Count(x, y, 0, 1, candyType, skipX, skipY, allCandies) + Count(x, y, 0, -1, candyType, skipX, skipY, allCandies) >= 2);
     }
 
-    private int Count(int x, int y, int dx, int dy, E_CandyType candyType, int skipX, int skipY, GridItem[,] allCandies)
+    private int Count(int x, int y, int dx, int dy, CandyItemData candyType, int skipX, int skipY, GridItem[,] allCandies)
     {
         int count = 0;
         for (int i = 1; i < 3; i++)
