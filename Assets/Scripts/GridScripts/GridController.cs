@@ -70,8 +70,13 @@ public class GridController : MonoBehaviour
 
     private void InitializeLevel(LevelData data)
     {
+        if (Grid.Width <= 0 || Grid.Height <= 0)
+        {
+            Debug.LogWarning("[GridController] La taille de la grille est à 0 ! Annulation de la génération.");
+            return;
+        }
 
-        if(Spawner != null)
+        if (Spawner != null)
         {
             Spawner.ResetGrid();
         }
@@ -81,8 +86,7 @@ public class GridController : MonoBehaviour
             Swap.Dispose();
         }
 
-        Debug.Log("Loading Level Data)");
-        Debug.Log("Initializing Level: " + data.name);
+        Debug.Log("Loading Level Data: " + data.name);
         CurrentLevel = data;
         Grid = new GridData(data.width, data.height);
 
@@ -97,12 +101,6 @@ public class GridController : MonoBehaviour
         }
         
         Grid.SetActiveCells(activeMap);
-
-        if (Grid.Width <= 0 || Grid.Height <= 0)
-        {
-            Debug.LogWarning("[GridController] La taille de la grille est à 0 ! Annulation de la génération.");
-            return;
-        }
 
 
         Visualizer = new GridVisualizer(this,data.width, data.height, spacing);
@@ -192,6 +190,7 @@ public class GridController : MonoBehaviour
     private void OnDestroy()
     {
         UnsubscribeFromEvents();
+
         if (Swap != null)
         {
             Swap.Dispose();

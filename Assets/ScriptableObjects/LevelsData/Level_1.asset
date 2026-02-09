@@ -15,7 +15,7 @@ MonoBehaviour:
   width: 5
   height: 5
   levelID: 1
-  maxMoves: 2
+  maxMoves: 10
   modifiers: []
   goals:
     scoreToFirstStar: 2000
@@ -25,6 +25,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8d62a3ce4007b3141abb7e7a162bb54c, type: 2}
   - {fileID: 11400000, guid: 4a46962214dd7504f91038402e8bb165, type: 2}
   - {fileID: 11400000, guid: a13e0d9dc0e56b2419f1fd116afbe99c, type: 2}
+  - {fileID: 11400000, guid: 7b3111478579a274cb6eedbd3ea44850, type: 2}
   specialItems: []
   grid:
   - isValid: 1
@@ -46,13 +47,7 @@ MonoBehaviour:
     baseItem: {fileID: 0}
     overlayItem: {fileID: 0}
   - isValid: 1
-    baseItem: {fileID: 11400000, guid: 69c4b2a365bc5ba409d0d1de152f334a, type: 2}
-    overlayItem: {fileID: 0}
-  - isValid: 1
     baseItem: {fileID: 0}
-    overlayItem: {fileID: 0}
-  - isValid: 1
-    baseItem: {fileID: 11400000, guid: 69c4b2a365bc5ba409d0d1de152f334a, type: 2}
     overlayItem: {fileID: 0}
   - isValid: 1
     baseItem: {fileID: 0}
@@ -76,13 +71,19 @@ MonoBehaviour:
     baseItem: {fileID: 0}
     overlayItem: {fileID: 0}
   - isValid: 1
-    baseItem: {fileID: 11400000, guid: 69c4b2a365bc5ba409d0d1de152f334a, type: 2}
+    baseItem: {fileID: 0}
     overlayItem: {fileID: 0}
   - isValid: 1
     baseItem: {fileID: 0}
     overlayItem: {fileID: 0}
   - isValid: 1
-    baseItem: {fileID: 11400000, guid: 69c4b2a365bc5ba409d0d1de152f334a, type: 2}
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
+    overlayItem: {fileID: 0}
+  - isValid: 1
+    baseItem: {fileID: 0}
     overlayItem: {fileID: 0}
   - isValid: 1
     baseItem: {fileID: 0}
