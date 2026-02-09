@@ -38,7 +38,6 @@ public class GameService : MonoBehaviour
 
     }
 
-
     private void Start()
     {
         gameStateService.ChangeGameState(E_GameState.MENU);

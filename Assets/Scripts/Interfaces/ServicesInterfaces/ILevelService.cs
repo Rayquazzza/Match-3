@@ -15,6 +15,5 @@ public interface ILevelService
 
     void SaveLevelProgress(int levelID, int starsEarned);
 
-
     void ResetProgress();
 }

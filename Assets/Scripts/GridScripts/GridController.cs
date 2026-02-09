@@ -65,15 +65,28 @@ public class GridController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {       
-
         SubscribeToEvents();
     }
 
     private void InitializeLevel(LevelData data)
     {
+
+        if(Spawner != null)
+        {
+            Spawner.ResetGrid();
+        }
+
+        if (Swap != null)
+        {
+            Swap.Dispose();
+        }
+
+        Debug.Log("Loading Level Data)");
         Debug.Log("Initializing Level: " + data.name);
         CurrentLevel = data;
         Grid = new GridData(data.width, data.height);
+
+
 
         bool[,] activeMap = new bool[data.width, data.height];
         for (int i = 0; i < data.grid.Length; i++)
@@ -99,7 +112,7 @@ public class GridController : MonoBehaviour
         Swap = new GridSwap(this);
         Match = new MatchChecker(data.width, data.height);
 
-        Spawner.ResetGrid();
+        
 
 
         SetupBackground();

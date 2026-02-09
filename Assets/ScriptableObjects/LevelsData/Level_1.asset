@@ -15,7 +15,7 @@ MonoBehaviour:
   width: 5
   height: 5
   levelID: 1
-  maxMoves: 10
+  maxMoves: 2
   modifiers: []
   goals:
     scoreToFirstStar: 2000

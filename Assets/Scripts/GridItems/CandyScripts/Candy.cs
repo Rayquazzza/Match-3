@@ -76,7 +76,7 @@ public class Candy : GridItem
     public virtual void Destroy()
     {
         GameServiceLocator.Get<IEffectService>().PlayExplosion(transform.position);
-        if (isBeingDestroyed) return; // Sécurité anti-double destruction
+        if (isBeingDestroyed) return;
         isBeingDestroyed = true;
 
         transform.DOKill();

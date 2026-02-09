@@ -101,17 +101,26 @@ public class GridSpawner
 
     public void ResetGrid()
     {
+        Debug.Log("Resetting Grid...");
         DOTween.KillAll();
-        if (grid.AllItems == null) return;
-
+        if (grid.AllItems == null)
+        {
+            Debug.LogWarning("GridSpawner: AllItems is null, skipping ResetGrid.");
+            return;
+        }
+            
         for (int x = 0; x < grid.Width; x++)
         {
             for (int y = 0; y < grid.Height; y++)
             {
-                if (grid.AllItems[x, y] != null)
+                if (grid.AllItems[x, y] != null && grid.IsValidPos(x,y))
                 {
                     grid.AllItems[x, y].OnDestroyItem();
                     grid.AllItems[x, y] = null;
+                }
+                else
+                {
+                    Debug.Log("No item to destroy");
                 }
 
                 if (grid.AllOverlays != null && grid.AllOverlays[x, y] != null)
