@@ -37,6 +37,7 @@ public class GridSwap
 
         if (pos2.x >= 0 && pos2.x < grid.Width && pos2.y >= 0 && pos2.y < grid.Height)
         {
+
             GridItem item2 = grid.AllItems[pos2.x, pos2.y];
 
             if (!item1.IsMovable || (item2 != null && !item2.IsMovable)) yield break;
@@ -58,13 +59,18 @@ public class GridSwap
 
             if (candy1 != null && candy2 != null)
             {
-                if (candy1.TriggerSpecialEffect(candy2) || candy2.TriggerSpecialEffect(candy1))
+                IEnumerator effect = null;
+                if (candy1 is ColorCandy || candy1 is SpecialCandy) effect = candy1.TriggerSpecialEffect(candy2);
+                else if (candy2 is ColorCandy || candy2 is SpecialCandy ) effect = candy2.TriggerSpecialEffect(candy1);
+
+                if (effect != null)
                 {
+                    yield return controller.StartCoroutine(effect);
+
                     grid.AllItems[pos1.x, pos1.y] = null;
                     grid.AllItems[pos2.x, pos2.y] = null;
 
                     yield return controller.StartCoroutine(controller.Shifter.ShiftAndRefill());
-
                     yield return controller.StartCoroutine(controller.Processor.FindAndProcessMatchesRoutine());
                     yield break;
                 }
@@ -75,7 +81,8 @@ public class GridSwap
                 yield return controller.StartCoroutine(controller.Processor.FindAndProcessMatchesRoutine());
             }
             else
-            {
+            { 
+                GameServiceLocator.Get<IMoveService>().SwapFailed(Vector3.zero);
                 controller.Visualizer.MoveItem(item1, pos1.x, pos1.y, controller.ShiftSpeed);
                 if (item2 != null) controller.Visualizer.MoveItem(item2, pos2.x, pos2.y, controller.ShiftSpeed);
 

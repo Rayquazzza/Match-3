@@ -23,7 +23,6 @@ public class LevelData : ScriptableObject
 
     public int maxMoves = 10;
 
-    public List<GridModifier> modifiers;
 
     public LevelGoals goals;
 
@@ -31,20 +30,6 @@ public class LevelData : ScriptableObject
 
     public List<GridItemData> specialItems;
 
-
-    public void SetupGrid(GridController grid)
-    {
-        foreach (var modifier in modifiers)
-        {
-            if (modifier == null) continue;
-            modifier.ApplyToGrid(grid);
-        }
-
-        foreach (var modifier in modifiers)
-        {
-            if (modifier != null) modifier.ApplyToOverlays(grid);
-        }
-    }
 
 
     public LevelSlot[] grid;

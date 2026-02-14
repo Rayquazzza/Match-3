@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -33,6 +34,8 @@ public class UI_LevelProgress : MonoBehaviour
         LevelGoals goals = data.goals;
         scoreBar.maxValue = goals.scoreToThirdStar;
         scoreBar.value = 0;
+
+        starIcons = starIcons.OrderBy(s => s.rectTransform.anchoredPosition.x).ToArray();
 
         float barWidth = scoreBar.GetComponent<RectTransform>().rect.width;
 

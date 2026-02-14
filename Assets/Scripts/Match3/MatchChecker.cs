@@ -25,12 +25,11 @@ public class MatchChecker
               
                 if (current == null || !current.IsMatchable) continue;
 
-                CandyItemData currentId = current.GetItemType();
+                GridItemData currentId = current.GetItemType();
 
                 if (x < width - 2)
                 {
-                    if (allItems[x + 1, y]?.GetItemType() == currentId &&
-                        allItems[x + 2, y]?.GetItemType() == currentId)
+                    if (allItems[x + 1, y]?.GetItemType() == currentId && allItems[x + 2, y]?.GetItemType() == currentId)
                     {
                         matchesFound.Add(allItems[x, y]);
                         matchesFound.Add(allItems[x + 1, y]);
@@ -40,8 +39,7 @@ public class MatchChecker
 
                 if (y < height - 2)
                 {
-                    if (allItems[x, y + 1]?.GetItemType() == currentId &&
-                        allItems[x, y + 2]?.GetItemType() == currentId)
+                    if (allItems[x, y + 1]?.GetItemType() == currentId && allItems[x, y + 2]?.GetItemType() == currentId)
                     {
                         matchesFound.Add(allItems[x, y]);
                         matchesFound.Add(allItems[x, y + 1]);
@@ -153,20 +151,20 @@ public class MatchChecker
 
         if (!item1.IsMovable || !item2.IsMovable) return false;
 
-        CandyItemData candyType1 = item1.GetItemType();
-        CandyItemData candyType2 = item2.GetItemType();
+        GridItemData candyType1 = item1.GetItemType();
+        GridItemData candyType2 = item2.GetItemType();
 
         return TestPos(x1, y1, candyType2, x2, y2, allCandies) ||
                TestPos(x2, y2, candyType1, x1, y1, allCandies);
     }
 
-    private bool TestPos(int x, int y, CandyItemData candyType, int skipX, int skipY, GridItem[,] allCandies)
+    private bool TestPos(int x, int y, GridItemData candyType, int skipX, int skipY, GridItem[,] allCandies)
     {
         return (Count(x, y, 1, 0, candyType, skipX, skipY, allCandies) + Count(x, y, -1, 0, candyType, skipX, skipY, allCandies) >= 2) ||
                (Count(x, y, 0, 1, candyType, skipX, skipY, allCandies) + Count(x, y, 0, -1, candyType, skipX, skipY, allCandies) >= 2);
     }
 
-    private int Count(int x, int y, int dx, int dy, CandyItemData candyType, int skipX, int skipY, GridItem[,] allCandies)
+    private int Count(int x, int y, int dx, int dy, GridItemData candyType, int skipX, int skipY, GridItem[,] allCandies)
     {
         int count = 0;
         for (int i = 1; i < 3; i++)

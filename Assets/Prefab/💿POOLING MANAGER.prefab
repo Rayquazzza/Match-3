@@ -45,15 +45,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectsToPrewarm:
-  - prefab: {fileID: 5169925230447727713, guid: 15a3bc0f7dda6ef4f990105599161f56, type: 3}
+  - prefab: {fileID: 4204580555411652338, guid: 682c59dd1d63e574993db2efae742328, type: 3}
     amount: 30
-  - prefab: {fileID: 6396181637742688888, guid: 7c8214816441f834db0e0bb0abea41a1, type: 3}
+  - prefab: {fileID: 3675701504491391170, guid: 5eaf0a255e8f2044e89a6bc82358bbf9, type: 3}
     amount: 30
   - prefab: {fileID: 5179640921251994735, guid: ca1f14c871b11844eaf9423629a4e132, type: 3}
     amount: 30
   - prefab: {fileID: 3930478991028234347, guid: c7d4fb67417fecf4b906bc6f3d42fc30, type: 3}
     amount: 30
-  - prefab: {fileID: 1371030480525096702, guid: 18dee1a0a13317443a2b6f5e3a3dbb6d, type: 3}
+  - prefab: {fileID: 2727706998429403955, guid: 844725fef23b62f48b8fb5932924f67a, type: 3}
     amount: 30
-  - prefab: {fileID: 7342328436683370841, guid: 98829f6819e7ee642b2d33dce42109e3, type: 3}
+  - prefab: {fileID: 8550308905373645401, guid: a9232f5dcd2071b49a294d6e0a2f13e4, type: 3}
+    amount: 30
+  - prefab: {fileID: 5851559853623165276, guid: a5e2a17f16ea7a2429aa0a296cb3c20f, type: 3}
     amount: 30

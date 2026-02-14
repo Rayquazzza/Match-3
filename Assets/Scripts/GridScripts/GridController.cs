@@ -3,21 +3,12 @@ using UnityEngine;
 
 public class GridController : MonoBehaviour
 {
+
     [Space(10)]
     [Header("MATCH PATTERNS")]
     [SerializeField] public List<MatchPattern> AvailablePatterns = new List<MatchPattern>();
 
     public LevelData CurrentLevel { get; private set; }
-
-
-    [Space(10)]
-    [Header("CANDY MANAGEMENT")]
-    [SerializeField] private GameObject baseCandyPrefab;
-
-    public GameObject BaseCandyPrefab
-    {
-        get { return baseCandyPrefab; }
-    }
 
     [SerializeField] private float spacing = 1f;
 
@@ -70,12 +61,6 @@ public class GridController : MonoBehaviour
 
     private void InitializeLevel(LevelData data)
     {
-        if (Grid.Width <= 0 || Grid.Height <= 0)
-        {
-            Debug.LogWarning("[GridController] La taille de la grille est à 0 ! Annulation de la génération.");
-            return;
-        }
-
         if (Spawner != null)
         {
             Spawner.ResetGrid();
@@ -88,34 +73,34 @@ public class GridController : MonoBehaviour
 
         Debug.Log("Loading Level Data: " + data.name);
         CurrentLevel = data;
-        Grid = new GridData(data.width, data.height);
+        Grid = new GridData(data.width, data.height,this);
 
-
-
-        bool[,] activeMap = new bool[data.width, data.height];
+        bool[,] activeCells = new bool[data.width, data.height];
         for (int i = 0; i < data.grid.Length; i++)
         {
             int x = i % data.width;
             int y = i / data.width;
-            activeMap[x, y] = data.grid[i].isValid;
+            activeCells[x, y] = data.grid[i].isValid;
         }
         
-        Grid.SetActiveCells(activeMap);
+        Grid.SetActiveCells(activeCells);
 
+        if (Grid.Width <= 0 || Grid.Height <= 0)
+        {
+            Debug.LogWarning("[GridController] La taille de la grille est à 0 ! Annulation de la génération.");
+            return;
+        }
 
         Visualizer = new GridVisualizer(this,data.width, data.height, spacing);
         Spawner = new GridSpawner(this, Grid);
         Processor = new MatchProcessor(this, Grid);
         Shifter = new GridShifter(this);
         Swap = new GridSwap(this);
-        Match = new MatchChecker(data.width, data.height);
-
-        
-
+        Match = new MatchChecker(data.width, data.height);     
 
         SetupBackground();
 
-        Camera.main.GetComponent<CameraFitter>().FitCameraToGrid(data.width, data.height,spacing);
+        //Camera.main.GetComponent<CameraFitter>().FitCameraToGrid(data.width, data.height,spacing);
     }
 
     /// <summary>

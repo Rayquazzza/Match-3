@@ -8,7 +8,6 @@ public class CameraFitter : MonoBehaviour
     
     [SerializeField] private float zoomOutFactor = 1.25f;
 
-
     [SerializeField] private float minCameraSize = 6.25f;
 
 

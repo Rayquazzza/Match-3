@@ -44,3 +44,6 @@ TagManager:
   - name: BackGround
     uniqueID: 3365886847
     locked: 0
+  - name: Effect
+    uniqueID: 1619353677
+    locked: 0

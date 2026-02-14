@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,9 @@ public class GridData
 {
     public int Width { get; private set; }
     public int Height { get; private set; }
+
+
+    private GridController controller;
 
     private GridItem[,] allItems;
     private GridItem[,] allOverlays;
@@ -24,7 +28,7 @@ public class GridData
         set { allOverlays = value; }
     }
 
-    public GridData(int width, int height)
+    public GridData(int width, int height,GridController controller)
     {
         Width = width;
         Height = height;
@@ -79,14 +83,14 @@ public class GridData
         return new Vector2Int(-1, -1);
     }
 
-    public void ClearMatchAt(int x, int y)
+    public void ClearMatchAt(int x, int y,int multiplier = 1)
     {
         if (x < 0 || x >= Width || y < 0 || y >= Height) return;
         GridItem gridItem = allItems[x, y];
         if (gridItem != null)
         {
             allItems[x, y] = null;
-            gridItem.OnDestroyItem();
+            gridItem.OnDestroyItem(multiplier);
         }
     }
 
@@ -127,5 +131,58 @@ public class GridData
             return false;
         }
         return allItems[pos.x, pos.y].IsMovable;
+    }
+
+    public void ClearColorAndTransform(CandyItemData colorTarget, SpecialEffect effectToGive)
+    {
+        for (int x = 0; x < Width; x++)
+        {
+            for (int y = 0; y < Height; y++)
+            {
+                GridItem item = allItems[x, y];
+                if (item is Candy candy && candy.GetItemType() == colorTarget)
+                {
+                    ClearMatchAt(x, y);
+
+                    effectToGive.Execute(x, y, this, controller);
+                }
+            }
+        }
+    }
+
+    public void ClearEntireGrid()
+    {
+        for (int x = 0; x < Width; x++)
+        {
+            for (int y = 0; y < Height; y++)
+            {
+                if (!IsValidPos(x, y)) continue;
+
+                ClearMatchAt(x, y);
+
+                ClearOverlayAt(x, y);
+            }
+        }
+
+        Debug.Log("La grille a été entièrement nettoyée !");
+    }
+
+    public List<Candy> GetCandiesOfColor(CandyItemData targetData)
+    {
+
+        List<Candy> candies = new List<Candy>();
+        for (int x = 0; x < Width; x++)
+        { 
+            for(int y = 0; y < Height; y++)
+            { 
+                GridItem item = allItems[x, y];
+                if (item is Candy candy && candy.GetItemType() == targetData) 
+                { 
+                  candies.Add(candy);
+                }
+            } 
+        }
+
+        return candies;
     }
 }

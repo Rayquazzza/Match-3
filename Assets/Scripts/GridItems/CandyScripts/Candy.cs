@@ -1,11 +1,11 @@
 using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using UnityEngine;
 
 public class Candy : GridItem
 {
-    [SerializeField] protected SpriteRenderer spriteRenderer;
 
     private Vector3 initialScale;
     private bool hasCachedScale = false;
@@ -18,20 +18,17 @@ public class Candy : GridItem
 
     private void Awake()
     {
-        // Register the normal scale once;
         CacheInitialScale();
     }
 
-    // effect by default
     public virtual void ExecuteEffect(Vector2Int myPos)
     {
         grid.ClearMatchAt(myPos.x, myPos.y);
     }
 
-    public virtual bool TriggerSpecialEffect(Candy swappedWith)
+    public virtual IEnumerator TriggerSpecialEffect(Candy swappedWith)
     {
-        // Return false by default
-        return false;
+        return null;
     }
 
     private void CacheInitialScale()
@@ -43,14 +40,10 @@ public class Candy : GridItem
         }
     }
 
-    public void SetType(CandyItemData type)
+    public override void SetType(GridItemData data)
     {
-        candyType = type;
-
-        if (spriteRenderer != null && candyType != null)
-        {
-            spriteRenderer.sprite = candyType.icon;
-        }
+        base.SetType(data);
+        candyType = data as CandyItemData;
     }
 
     private void OnEnable()
@@ -69,23 +62,25 @@ public class Candy : GridItem
         transform.DOScale(initialScale, 0.5f).SetEase(Ease.OutBack);
     }
 
-    public override void OnDestroyItem()
+    public override void OnDestroyItem(int multiplier = 1)
     {
-        Destroy();
-    }
-    public virtual void Destroy()
-    {
-        GameServiceLocator.Get<IEffectService>().PlayExplosion(transform.position);
         if (isBeingDestroyed) return;
         isBeingDestroyed = true;
 
+        int baseScore = 50;
+        int finalScore = baseScore * multiplier;
+
+
+        GameServiceLocator.Get<IScoreService>()?.AddScore(finalScore);
+
+        GameServiceLocator.Get<IMatchService>()?.NotifyItemDestroyed(transform.position, candyType);
+
+        GameServiceLocator.Get<IMatchService>()?.NotifyScorePoint(transform.position, finalScore);
+
         transform.DOKill();
-        transform.DOScale(Vector3.zero, 0.2f)
-            .SetEase(Ease.InBack)
-            .OnComplete(() =>
-            {              
-                GetComponent<PoolMember>().ReturnToPool();
-            });
+        transform.DOScale(Vector3.zero, 0.2f).SetEase(Ease.InBack).OnComplete(() => {
+            GetComponent<PoolMember>().ReturnToPool();
+        });
     }
 
 }

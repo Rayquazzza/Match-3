@@ -1,34 +1,42 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class ColorCandy : Candy
 {
+    public override bool IsMatchable => false;
 
-    // Cette méthode est appelée par le GridGenerator
-    public void ExecuteColorEffect(CandyItemData candyType)
+    public override IEnumerator TriggerSpecialEffect(Candy swappedWith)
     {
-        // Grâce à l'injection, le bonbon dit à la grille quoi faire
-        grid.ClearColor(candyType);
+        CandyItemData targetData = swappedWith.GetItemType() as CandyItemData;
+        List<Candy> targets = grid.GetCandiesOfColor(targetData);
 
-        // On pourrait ajouter un effet visuel ici (particules, éclairs...)
-        Debug.Log($"Color Bomb activée sur la couleur : {candyType}");
-    }
+        float travelTime = 0.5f;
+        List<Vector3> targetPositions = targets.Select(t => t.transform.position).ToList();
 
-    // On override l'ID pour être sûr qu'il ne match pas avec des bonbons normaux
+        GameServiceLocator.Get<IMatchService>().NotifyColorBomb(transform.position, targetPositions, travelTime);
 
-    public override bool TriggerSpecialEffect(Candy swappedWith)
-    {
-        // La ColorCandy s'auto-exécute avec l'ID du bonbon avec lequel elle a switché
-        CandyItemData targetID = swappedWith.GetItemType();
+        //GameServiceLocator.Get<IMoveService>().PerformMatch(transform.position, 1);
 
-        // On nettoie la grille
-        grid.ClearColor(targetID);
 
-        // On se détruit soi-même et l'autre
-        swappedWith.Destroy();
-        this.Destroy();
+        yield return new WaitForSeconds(travelTime);
 
-        return true; // On confirme qu'un effet a eu lieu
+        int colorCombo = 1;
+        foreach (var target in targets)
+        {
+            Vector2Int pos = grid.GetPositionOf(target);
+            if (pos.x != -1)
+            {
+                grid.ClearMatchAt(pos.x, pos.y, colorCombo);
+            }
+        }
+
+        Vector2Int myPos = grid.GetPositionOf(this);
+        Vector2Int swapPos = grid.GetPositionOf(swappedWith);
+
+        grid.ClearMatchAt(swapPos.x, swapPos.y, 1);
+        grid.ClearMatchAt(myPos.x, myPos.y, 1);
     }
 }

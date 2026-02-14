@@ -10,7 +10,7 @@ public class WoodBlock : GridItem
 
     private void OnEnable()
     {
-        sr = GetComponent<SpriteRenderer>();
+        sr = GetComponentInChildren<SpriteRenderer>();
         Color c = sr.color;
         c.a = initialAlpha;
         sr.color = c;
@@ -27,8 +27,7 @@ public class WoodBlock : GridItem
 
         if (currentHealth <= 0)
         {
-            // On le retire de la grille logique avant de le détruire
-            // pour que les bonbons puissent tomber immédiatement
+            Debug.Log("Wood block destroyed at " + transform.position);
             Vector2Int pos = grid.GetPositionOf(this);
             if (pos.x != -1) grid.AllItems[pos.x, pos.y] = null;
 
@@ -44,15 +43,12 @@ public class WoodBlock : GridItem
         }
     }
 
-    public override void OnDestroyItem()
+    public override void OnDestroyItem(int multiplier = 1)
     {
-        // On peut jouer un effet de débris ici
         GameServiceLocator.Get<IEffectService>().PlayExplosion(transform.position);
 
-        // Comme c'est un obstacle, on peut donner plus de points
         GameServiceLocator.Get<IScoreService>().AddScore(200);
 
-        // Retour au pool
         GetComponent<PoolMember>().ReturnToPool();
     }
 }

@@ -78,7 +78,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AvailablePatterns:
   - {fileID: 11400000, guid: 42e2c5edd5a172043ae8e0d3bde6e05c, type: 2}
-  baseCandyPrefab: {fileID: 5169925230447727713, guid: 15a3bc0f7dda6ef4f990105599161f56, type: 3}
   spacing: 1.35
   shiftSpeed: 0.3
   bgTilePrefab: {fileID: 8471243784142575429, guid: 2e7d00c3a0d54e649a7e3d08dbcf21c0, type: 3}

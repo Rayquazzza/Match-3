@@ -19,7 +19,6 @@ public class GridSpawner
     {
         List<CandyItemData> allTypes = new List<CandyItemData>();
 
-
         foreach (var item in controller.CurrentLevel.availableCandies)
         {
             if (item != null)
@@ -39,25 +38,19 @@ public class GridSpawner
 
                 if (slotData.baseItem != null)
                 {
-                    if (slotData.baseItem is CandyItemData specificCandy)
-                    {
-                        SpawnCandy(x, y, specificCandy);
-                    }
-                    else
-                    {
-                        SpawnItem(x, y, slotData.baseItem.prefab);
-                    }
+                    SpawnItem(x, y, slotData.baseItem);
                 }
                 else
                 {
                     List<CandyItemData> possibleCandies = GetValidRandomCandies(x, y, allTypes);
                     CandyItemData chosenType = possibleCandies[Random.Range(0, possibleCandies.Count)];
+
                     SpawnCandy(x, y, chosenType);
                 }
 
                 if (slotData.overlayItem != null)
                 {
-                    SpawnOverlay(x, y, slotData.overlayItem.prefab);
+                    SpawnOverlay(x, y, slotData.overlayItem);
                 }
             }
         }
@@ -81,7 +74,7 @@ public class GridSpawner
             if (item1 != null && item2 != null)
             {
                 var type1 = item1.GetItemType(); 
-                if (type1 == item2.GetItemType()) possible.Remove(type1);
+                if (type1 == item2.GetItemType()) possible.Remove(type1 as CandyItemData);
             }
         }
 
@@ -92,7 +85,7 @@ public class GridSpawner
             if (item1 != null && item2 != null)
             {
                 var type1 = item1.GetItemType();
-                if (type1 == item2.GetItemType()) possible.Remove(type1);
+                if (type1 == item2.GetItemType()) possible.Remove(type1 as CandyItemData);
             }
         }
 
@@ -139,16 +132,21 @@ public class GridSpawner
         ResetGrid();
         GenerateGrid();
     }
-    public void SpawnItem(int x, int y, GameObject prefab)
+
+    public void SpawnItem(int x, int y, GridItemData data)
     {
-        if (grid.AllItems[x, y] != null) return;
+        if (grid.AllItems[x, y] != null || data == null) return;
 
         Vector3 pos = controller.Visualizer.GetWorldPosition(x, y);
-        GameObject go = GameServiceLocator.Get<IPoolingService>().GetFromPool(prefab, pos, Quaternion.identity);
+
+        GameObject go = GameServiceLocator.Get<IPoolingService>().GetFromPool(data.prefab, pos, Quaternion.identity);
         go.transform.SetParent(controller.transform);
 
         GridItem item = go.GetComponent<GridItem>();
-        item.Init(controller);
+        if(item) item.Init(controller);
+
+        if(item) item.SetType(data);
+
         grid.SetItem(x, y, item);
     }
 
@@ -165,7 +163,7 @@ public class GridSpawner
             spawnPos = new Vector3(targetPos.x, offsetY, 0);
         }
 
-        GameObject go = GameServiceLocator.Get<IPoolingService>().GetFromPool(controller.BaseCandyPrefab, spawnPos, Quaternion.identity);
+        GameObject go = GameServiceLocator.Get<IPoolingService>().GetFromPool(type.prefab, spawnPos, Quaternion.identity);
         go.transform.SetParent(controller.transform);
 
         Candy candy = go.GetComponent<Candy>();
@@ -180,16 +178,27 @@ public class GridSpawner
         }
     }
 
-    public void SpawnOverlay(int x, int y, GameObject prefab)
+    public void SpawnOverlay(int x, int y, GridItemData data)
     {
+        if (data == null) return;
+
         Vector3 pos = controller.Visualizer.GetWorldPosition(x, y);
-        GameObject go = GameServiceLocator.Get<IPoolingService>().GetFromPool(prefab, pos, Quaternion.identity);
+        GameObject go = GameServiceLocator.Get<IPoolingService>().GetFromPool(data.prefab, pos, Quaternion.identity);
         go.transform.SetParent(controller.transform);
 
         GridItem item = go.GetComponent<GridItem>();
         item.Init(controller);
+        item.SetType(data); 
 
         grid.SetOverlay(x, y, item);
+
+        foreach (var layer in grid.AllOverlays)
+        {
+            if (layer != null) 
+            {
+                Debug.Log($"Overlay trouvé : {layer.name}");
+            }
+        }
     }
 
     public IEnumerator ShuffleGrid()

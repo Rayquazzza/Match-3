@@ -53,17 +53,28 @@ public class GridEditorWindow : EditorWindow
         allOverlays.Clear();
         allCandyTypes.Clear();
 
-        string[] candyGuids = AssetDatabase.FindAssets("t:CandyItemData");
-        foreach (var guid in candyGuids)
-            allCandyTypes.Add(AssetDatabase.LoadAssetAtPath<CandyItemData>(AssetDatabase.GUIDToAssetPath(guid)));
+        string[] overlayGuids = AssetDatabase.FindAssets("t:OverlayItemData");
+        foreach (var guid in overlayGuids)
+        {
+            var item = AssetDatabase.LoadAssetAtPath<OverlayItemData>(AssetDatabase.GUIDToAssetPath(guid));
+            if (item != null) allOverlays.Add(item);
+        }
 
         string[] baseGuids = AssetDatabase.FindAssets("t:GridItemData");
         foreach (var guid in baseGuids)
-            allBaseItems.Add(AssetDatabase.LoadAssetAtPath<GridItemData>(AssetDatabase.GUIDToAssetPath(guid)));
+        {
+            var path = AssetDatabase.GUIDToAssetPath(guid);
+            var item = AssetDatabase.LoadAssetAtPath<GridItemData>(path);
 
-        string[] overlayGuids = AssetDatabase.FindAssets("t:OverlayItemData");
-        foreach (var guid in overlayGuids)
-            allOverlays.Add(AssetDatabase.LoadAssetAtPath<OverlayItemData>(AssetDatabase.GUIDToAssetPath(guid)));
+            if (item != null && !(item is OverlayItemData))
+            {
+                allBaseItems.Add(item);
+            }
+        }
+
+        string[] candyGuids = AssetDatabase.FindAssets("t:CandyItemData");
+        foreach (var guid in candyGuids)
+            allCandyTypes.Add(AssetDatabase.LoadAssetAtPath<CandyItemData>(AssetDatabase.GUIDToAssetPath(guid)));
     }
 
     public static void OpenWithConfig(LevelData data)
@@ -165,8 +176,8 @@ public class GridEditorWindow : EditorWindow
         else
         {
             isSelected = (item == selectedBase || item == selectedOverlay);
+
             if (item is GridItemData b) iconTex = AssetPreview.GetAssetPreview(b.icon);
-            else if (item is OverlayItemData o) iconTex = AssetPreview.GetAssetPreview(o.icon);
         }
 
         if (isSelected) GUI.backgroundColor = new Color(0.2f, 0.6f, 1f);

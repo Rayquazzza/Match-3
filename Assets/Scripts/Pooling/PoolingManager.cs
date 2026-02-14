@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PoolManager : MonoBehaviour, IPoolingService
+public class PoolService : MonoBehaviour, IPoolingService
 {
 
     private Dictionary<int, Queue<GameObject>> poolDictionary = new Dictionary<int, Queue<GameObject>>();
@@ -11,7 +11,7 @@ public class PoolManager : MonoBehaviour, IPoolingService
 
 
     /// <summary>
-    /// Optional : Prepare the pool with a certain number of instances.
+    /// Prepare the pool with a certain number of instances.
     /// </summary>
     public void Prewarm(GameObject prefab, int count)
     {
@@ -47,7 +47,6 @@ public class PoolManager : MonoBehaviour, IPoolingService
         // Get the unique ID for the prefab
         int id = prefab.GetInstanceID();
 
-        // 1. Initialize the pool for this prefab if it doesn't exist
         if (!poolDictionary.ContainsKey(id))
         {
             poolDictionary.Add(id, new Queue<GameObject>());
@@ -55,7 +54,6 @@ public class PoolManager : MonoBehaviour, IPoolingService
 
         GameObject obj;
 
-        // 2. Recover an object from the pool if available
         if (poolDictionary[id].Count > 0)
         {
             obj = poolDictionary[id].Dequeue();
@@ -64,12 +62,10 @@ public class PoolManager : MonoBehaviour, IPoolingService
         {
             obj = Instantiate(prefab);
 
-            // We can add a PoolMember component to track the prefab reference
             PoolMember member = obj.AddComponent<PoolMember>();
             member.myPrefab = prefab;
         }
 
-        // Configure and activate the object
         obj.transform.position = position;
         obj.transform.rotation = rotation;
         obj.SetActive(true);

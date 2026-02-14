@@ -15,21 +15,33 @@ public class GameService : MonoBehaviour
 
     private IUIService UIService;
 
+    private IAudioService audioService;
+
+    private IMatchService matchService;
+
 
     [SerializeField] private bool ResetSaveProgressOnAwake = false;
 
 
     private void Awake()
     {
+
+        // --- Initialize Services ---
         gameStateService = new GameStateService();
         scoreService = new ScoreService();
         moveService = new MoveService();
         levelService = new LevelService();
         UIService = new UIService();
+        audioService = new AudioService();
+        matchService = new MatchService();
+        // ---------------------------
 
+
+        // --- Initialize service that require to listen to events ---
         moveService.Init();
-
         scoreService.Init();
+        // ---------------------------
+
 
         if (ResetSaveProgressOnAwake)
         {
@@ -43,9 +55,6 @@ public class GameService : MonoBehaviour
         gameStateService.ChangeGameState(E_GameState.MENU);
         GameServiceLocator.Get<IMoveService>().OnOutOfMoves += OnMovesDepleted;
     }
-
-    
-
 
     private void OnMovesDepleted()
     {
