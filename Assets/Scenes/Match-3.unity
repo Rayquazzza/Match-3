@@ -144,14 +144,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: "\U0001F4FAUI"
       objectReference: {fileID: 0}
-    - target: {fileID: 2320800552272208500, guid: c34c3fae00fb9d748af823336d1a3667, type: 3}
-      propertyPath: offset
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 3351402061603377837, guid: c34c3fae00fb9d748af823336d1a3667, type: 3}
-      propertyPath: offset
-      value: 20
-      objectReference: {fileID: 0}
     - target: {fileID: 3477992567389498163, guid: c34c3fae00fb9d748af823336d1a3667, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -183,10 +175,6 @@ PrefabInstance:
     - target: {fileID: 4365438254124988584, guid: c34c3fae00fb9d748af823336d1a3667, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6945695215646255950, guid: c34c3fae00fb9d748af823336d1a3667, type: 3}
-      propertyPath: offset
-      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 6959467821463214469, guid: c34c3fae00fb9d748af823336d1a3667, type: 3}
       propertyPath: m_Camera

@@ -25,6 +25,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4a46962214dd7504f91038402e8bb165, type: 2}
   - {fileID: 11400000, guid: a13e0d9dc0e56b2419f1fd116afbe99c, type: 2}
   - {fileID: 11400000, guid: 7b3111478579a274cb6eedbd3ea44850, type: 2}
+  - {fileID: 11400000, guid: 073d1de3497575946967b0138778aaa1, type: 2}
   specialItems: []
   grid:
   - isValid: 1

@@ -38,9 +38,4 @@ public class GridVisualizer
         candy.transform.DOKill();
         candy.transform.DOMove(targetPosition, duration).SetEase(easeType);
     }
-
-    public void SpawnLightning(Vector3 position1, Vector3 position2, float travelTime)
-    {
-        
-    }
 }

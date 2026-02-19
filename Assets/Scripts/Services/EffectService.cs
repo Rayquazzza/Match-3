@@ -20,9 +20,12 @@ public class EffectService : MonoBehaviour, IEffectService
             effect.transform.position = position;
 
             var ps = effect.GetComponentInChildren<ParticleSystem>();
-            var main = ps.main;
-
-            ps.Play();
+            if(ps != null)
+            {
+                var main = ps.main;
+                ps.Play();
+            }
+            
         }
         
     }

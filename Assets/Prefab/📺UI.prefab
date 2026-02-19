@@ -224,7 +224,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1907f6fb085533241aefd36533d1ab34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offset: 10
+  offset: 20
   duration: 1.5
 --- !u!1 &699242464014210672
 GameObject:
@@ -2608,7 +2608,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1907f6fb085533241aefd36533d1ab34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offset: 10
+  offset: 20
   duration: 1.5
 --- !u!1 &6549165047429633196
 GameObject:
@@ -2978,7 +2978,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1907f6fb085533241aefd36533d1ab34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offset: 10
+  offset: 20
   duration: 1.5
 --- !u!1 &7445393615917138605
 GameObject:
