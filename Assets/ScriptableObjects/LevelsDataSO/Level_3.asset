@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Level_3
   m_EditorClassIdentifier: 
   width: 8
-  height: 10
+  height: 8
   levelID: 3
   maxMoves: 30
   goals:
@@ -24,6 +24,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4a46962214dd7504f91038402e8bb165, type: 2}
   - {fileID: 11400000, guid: a13e0d9dc0e56b2419f1fd116afbe99c, type: 2}
   - {fileID: 11400000, guid: 8d62a3ce4007b3141abb7e7a162bb54c, type: 2}
+  - {fileID: 11400000, guid: cfa6d5b28defdb548acbe65984832f6d, type: 2}
+  - {fileID: 11400000, guid: 7b3111478579a274cb6eedbd3ea44850, type: 2}
   specialItems: []
   grid:
   - isValid: 1
@@ -95,54 +97,6 @@ MonoBehaviour:
   - isValid: 1
     baseItem: {fileID: 0}
     overlayItem: {fileID: 0}
-  - isValid: 1
-    baseItem: {fileID: 0}
-    overlayItem: {fileID: 0}
-  - isValid: 1
-    baseItem: {fileID: 0}
-    overlayItem: {fileID: 0}
-  - isValid: 1
-    baseItem: {fileID: 0}
-    overlayItem: {fileID: 0}
-  - isValid: 1
-    baseItem: {fileID: 0}
-    overlayItem: {fileID: 0}
-  - isValid: 1
-    baseItem: {fileID: 0}
-    overlayItem: {fileID: 0}
-  - isValid: 1
-    baseItem: {fileID: 0}
-    overlayItem: {fileID: 0}
-  - isValid: 1
-    baseItem: {fileID: 0}
-    overlayItem: {fileID: 0}
-  - isValid: 1
-    baseItem: {fileID: 0}
-    overlayItem: {fileID: 0}
-  - isValid: 1
-    baseItem: {fileID: 0}
-    overlayItem: {fileID: 0}
-  - isValid: 1
-    baseItem: {fileID: 0}
-    overlayItem: {fileID: 0}
-  - isValid: 1
-    baseItem: {fileID: 0}
-    overlayItem: {fileID: 11400000, guid: d0ede40143fec0e438ee9bd314463d0a, type: 2}
-  - isValid: 1
-    baseItem: {fileID: 0}
-    overlayItem: {fileID: 0}
-  - isValid: 1
-    baseItem: {fileID: 0}
-    overlayItem: {fileID: 0}
-  - isValid: 1
-    baseItem: {fileID: 0}
-    overlayItem: {fileID: 0}
-  - isValid: 1
-    baseItem: {fileID: 0}
-    overlayItem: {fileID: 0}
-  - isValid: 1
-    baseItem: {fileID: 0}
-    overlayItem: {fileID: 11400000, guid: d0ede40143fec0e438ee9bd314463d0a, type: 2}
   - isValid: 1
     baseItem: {fileID: 0}
     overlayItem: {fileID: 0}
