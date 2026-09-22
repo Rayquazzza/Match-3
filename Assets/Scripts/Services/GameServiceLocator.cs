@@ -76,6 +76,10 @@ public static class GameServiceLocator
     /// </summary>
     public static T Get<T>() where T : class
     {
+
+        if (!Application.isPlaying) return null;
+
+
         var serviceType = typeof(T);
 
         if (services.TryGetValue(serviceType, out var entry))

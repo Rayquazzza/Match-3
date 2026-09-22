@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class InGameUI : MonoBehaviour
 {
+
+    [SerializeField] private GameObject root;
+
     private void Start()
     {
         GameServiceLocator.Get<IGameStateService>().OnGameStateChanged += GameStateChanged;
@@ -14,11 +17,11 @@ public class InGameUI : MonoBehaviour
     {
         if (state == E_GameState.IN_GAME)
         {
-            gameObject.SetActive(true);
+            root.SetActive(true);
         }
         else
         {
-            gameObject.SetActive(false);
+            root.SetActive(false);
         }
     }
 

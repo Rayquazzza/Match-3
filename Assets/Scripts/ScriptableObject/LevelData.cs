@@ -17,27 +17,19 @@ public class LevelData : ScriptableObject
     public int width = 4;
     public int height = 8;
 
+    public int levelID;
+
+
 
     public int maxMoves = 10;
 
-    public List<GridModifier> modifiers;
 
     public LevelGoals goals;
 
+    public List<CandyItemData> availableCandies;
 
-    public void SetupGrid(GridController grid)
-    {
-        foreach (var modifier in modifiers)
-        {
-            if (modifier == null) continue;
-            modifier.ApplyToGrid(grid);
-        }
+    public List<GridItemData> specialItems;
 
-        foreach (var modifier in modifiers)
-        {
-            if (modifier != null) modifier.ApplyToOverlays(grid);
-        }
-    }
 
 
     public LevelSlot[] grid;

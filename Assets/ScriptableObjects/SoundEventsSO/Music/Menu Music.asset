@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5052bac3934f83d4a98ffb2e26c5427d, type: 3}
+  m_Name: Menu Music
+  m_EditorClassIdentifier: 
+  fmodEvent:
+    Guid:
+      Data1: -961390217
+      Data2: 1258671668
+      Data3: 778166189
+      Data4: 259551251
+    Path: event:/menu_Music

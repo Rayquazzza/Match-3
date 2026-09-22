@@ -44,4 +44,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 340e9012431a89e42912b9e3bf48daf7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  transitionUI: {fileID: 0}
+  ResetSaveProgressOnAwake: 0

@@ -15,7 +15,7 @@ public class LevelDataEditor : Editor
         GUI.backgroundColor = Color.cyan;
         if (GUILayout.Button("Open Level Editor Window", GUILayout.Height(40)))
         {
-            CreateGridEditorWindow.OpenWithConfig(data);
+            GridEditorWindow.OpenWithConfig(data);
         }
         GUI.backgroundColor = Color.white;
     }

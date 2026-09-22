@@ -7,6 +7,8 @@ public class MoveService : IMoveService
     public event Action<int> OnMovesUpdated;
     public event Action OnOutOfMoves;
     public event Action<Candy, Vector2Int> OnSwapAttempt;
+    public event Action<Vector3, int> OnMatchPerformed;
+    public event Action<Vector3> OnSwapFailed;
 
     private int _remainingMoves = 20;
 
@@ -65,5 +67,15 @@ public class MoveService : IMoveService
     public void AttemptSwap(Candy candy, Vector2Int direction)
     {
        OnSwapAttempt?.Invoke(candy, direction);
+    }
+
+    public void PerformMatch(Vector3 position, int matchSize)
+    {
+        OnMatchPerformed?.Invoke(position, matchSize);
+    }
+
+    public void SwapFailed(Vector3 position)
+    {
+        OnSwapFailed?.Invoke(position);
     }
 }

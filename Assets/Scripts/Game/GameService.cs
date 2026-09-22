@@ -15,31 +15,58 @@ public class GameService : MonoBehaviour
 
     private IUIService UIService;
 
+    private IAudioService audioService;
+
+    private IMatchService matchService;
+
+
+    [SerializeField] private bool ResetSaveProgressOnAwake = false;
+
+
     private void Awake()
     {
+
+        // --- Initialize Services ---
         gameStateService = new GameStateService();
         scoreService = new ScoreService();
         moveService = new MoveService();
         levelService = new LevelService();
         UIService = new UIService();
+        audioService = new AudioService();
+        matchService = new MatchService();
+        // ---------------------------
 
+
+        // --- Initialize service that require to listen to events ---
         moveService.Init();
-
         scoreService.Init();
+        // ---------------------------
+
+
+        if (ResetSaveProgressOnAwake)
+        {
+            levelService.ResetProgress();
+        }
 
     }
 
-
     private void Start()
     {
+        Application.targetFrameRate = 60;
         gameStateService.ChangeGameState(E_GameState.MENU);
         GameServiceLocator.Get<IMoveService>().OnOutOfMoves += OnMovesDepleted;
     }
 
-
     private void OnMovesDepleted()
     {
-        GameServiceLocator.Get<ITransitionService>().TransitionToState(E_GameState.LEVEL_SELECTION);
+        int finalScore = scoreService.Score;
+        LevelData currentLevel = levelService.CurrentLevelData;
+
+        int stars = currentLevel.goals.GetStarsEarned(finalScore);
+
+        levelService.SaveLevelProgress(currentLevel.levelID, stars);
+
+        gameStateService.ChangeGameState(E_GameState.GAME_ENDED);
     }
 
     private void OnDestroy()

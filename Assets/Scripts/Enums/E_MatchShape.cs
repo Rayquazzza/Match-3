@@ -1,0 +1,1 @@
+public enum MatchShape { None, FourHorizontal, FourVertical, LOrT, FiveInLine }

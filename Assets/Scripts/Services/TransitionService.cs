@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -10,7 +11,20 @@ public class TransitionService : MonoBehaviour, ITransitionService
     {
         GameServiceLocator.Register<ITransitionService>(this);
     }
-   
+
+    private void Start()
+    {
+        GameServiceLocator.Get<IGameStateService>().OnGameStateChanged += GameStateChanged;
+        
+    }
+
+    private void GameStateChanged(E_GameState state)
+    {
+        if(state == E_GameState.GAME_ENDED)
+        {
+            TransitionToState(E_GameState.LEVEL_SELECTION);
+        }
+    }
 
     public void TransitionToState(E_GameState state)
     {
@@ -18,18 +32,14 @@ public class TransitionService : MonoBehaviour, ITransitionService
     }
     public IEnumerator TransitionToStateCoroutine(E_GameState state)
     {
-        // 1. Afficher l'écran de chargement et lancer les sauts
-        transitionUI.SetVisible(true);
+        if (transitionUI) transitionUI.SetVisible(true);
 
-        // 2. Attendre un peu pour que le joueur voie les bonbons sauter (ex: 2 secondes)
         yield return new WaitForSeconds(2.0f);
 
-        // 3. Changer l'état du jeu (chargement de scène, reset score, etc.)
         GameServiceLocator.Get<IGameStateService>().ChangeGameState(state);
 
-        // 4. Attendre la fin du chargement si nécessaire, puis cacher la transition
         yield return new WaitForSeconds(0.5f);
-        transitionUI.SetVisible(false);
+        if (transitionUI) transitionUI.SetVisible(false);
     }
 
     private void OnDestroy()

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelService : ILevelService
 {
@@ -25,6 +26,23 @@ public class LevelService : ILevelService
         CurrentLevelData = levelData;
         OnLoadLevelData?.Invoke(levelData);
         GameServiceLocator.Get<ITransitionService>().TransitionToState(gameState);
+    }
+
+    public void SaveLevelProgress(int levelID, int starsEarned)
+    {
+        int currentSavedStars = PlayerPrefs.GetInt($"Level_{levelID}_Stars", 0);
+
+        if (starsEarned > currentSavedStars)
+        {
+            PlayerPrefs.SetInt($"Level_{levelID}_Stars", starsEarned);
+            PlayerPrefs.Save();
+        }
+    }
+
+    public void ResetProgress()
+    {
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.Save();
     }
 
     ~LevelService()

@@ -3,19 +3,12 @@ using UnityEngine;
 
 public class GridController : MonoBehaviour
 {
-    [SerializeField] public List<MatchPattern> AvailablePatterns = new List<MatchPattern>();
-
-    private LevelData currentLevel;
-
 
     [Space(10)]
-    [Header("CANDY MANAGEMENT")]
-    [SerializeField] private GameObject baseCandyPrefab;
+    [Header("MATCH PATTERNS")]
+    [SerializeField] public List<MatchPattern> AvailablePatterns = new List<MatchPattern>();
 
-    public GameObject BaseCandyPrefab
-    {
-        get { return baseCandyPrefab; }
-    }
+    public LevelData CurrentLevel { get; private set; }
 
     [SerializeField] private float spacing = 1f;
 
@@ -62,37 +55,52 @@ public class GridController : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {
+    {       
         SubscribeToEvents();
     }
 
     private void InitializeLevel(LevelData data)
     {
-        currentLevel = data;
-        Grid = new GridData(data.width, data.height);
+        if (Spawner != null)
+        {
+            Spawner.ResetGrid();
+        }
 
-        // --- Conversion du LevelSlot[] en bool[,] pour GridData ---
-        //bool[,] activeMap = new bool[data.width, data.height];
-        //for (int i = 0; i < data.grid.Length; i++)
-        //{
-        //    int x = i % data.width;
-        //    int y = i / data.width;
-        //    activeMap[x, y] = data.grid[i].isValid;
-        //}
-        //Grid.SetActiveGrid(activeMap);
+        if (Swap != null)
+        {
+            Swap.Dispose();
+        }
+
+        Debug.Log("Loading Level Data: " + data.name);
+        CurrentLevel = data;
+        Grid = new GridData(data.width, data.height,this);
+
+        bool[,] activeCells = new bool[data.width, data.height];
+        for (int i = 0; i < data.grid.Length; i++)
+        {
+            int x = i % data.width;
+            int y = i / data.width;
+            activeCells[x, y] = data.grid[i].isValid;
+        }
+        
+        Grid.SetActiveCells(activeCells);
+
+        if (Grid.Width <= 0 || Grid.Height <= 0)
+        {
+            Debug.LogWarning("[GridController] La taille de la grille est à 0 ! Annulation de la génération.");
+            return;
+        }
+
         Visualizer = new GridVisualizer(this,data.width, data.height, spacing);
         Spawner = new GridSpawner(this, Grid);
         Processor = new MatchProcessor(this, Grid);
         Shifter = new GridShifter(this);
         Swap = new GridSwap(this);
-        Match = new MatchChecker(data.width, data.height);
-
-        Spawner.ResetGrid();
-
-        //Setup level grid
-        currentLevel.SetupGrid(this);
+        Match = new MatchChecker(data.width, data.height);     
 
         SetupBackground();
+
+        //Camera.main.GetComponent<CameraFitter>().FitCameraToGrid(data.width, data.height,spacing);
     }
 
     /// <summary>
@@ -112,30 +120,40 @@ public class GridController : MonoBehaviour
     /// </summary>
     private void SetupBackground()
     {
-        // 1. Nettoyer l'ancien background
         if (bgParent != null)
         {
             foreach (Transform child in bgParent) Destroy(child.gameObject);
         }
 
-        // 2. Générer le background case par case
-        for (int i = 0; i < currentLevel.grid.Length; i++)
+        for (int x = 0; x < Grid.Width; x++)
         {
-            LevelSlot slot = currentLevel.grid[i];
-
-            // IMPORTANT : On ne crée un fond que si la case est VALID (pas un trou)
-            if (slot.isValid)
+            for (int y = 0; y < Grid.Height; y++)
             {
-                // On convertit l'index 1D en coordonnées X,Y
-                int x = i % currentLevel.width;
-                int y = i / currentLevel.width;
+                if (Grid.IsValidPos(x, y))
+                {
+                    Vector3 pos = Visualizer.GetWorldPosition(x, y);
+                    pos.z = 1f;
+                    GameObject bg = Instantiate(bgTilePrefab, pos, Quaternion.identity, bgParent);
 
-                Vector3 pos = Visualizer.GetWorldPosition(x, y);
-                pos.z = 1f; // On le met derrière les bonbons
+                    float padding = 1f; 
+                    bg.transform.localScale = new Vector3(spacing * padding, spacing * padding, 1);
 
-                GameObject bg = Instantiate(bgTilePrefab, pos, Quaternion.identity);
+                    bool up = Grid.IsValidPos(x, y + 1);
+                    bool down = Grid.IsValidPos(x, y - 1);
+                    bool left = Grid.IsValidPos(x - 1, y);
+                    bool right = Grid.IsValidPos(x + 1, y);
 
-                if (bgParent != null) bg.transform.SetParent(bgParent);
+                    bool tl = Grid.IsValidPos(x - 1, y + 1);
+                    bool tr = Grid.IsValidPos(x + 1, y + 1);
+                    bool bl = Grid.IsValidPos(x - 1, y - 1);
+                    bool br = Grid.IsValidPos(x + 1, y - 1);
+
+                    BackgroundTile tileScript = bg.GetComponent<BackgroundTile>();
+                    if (tileScript != null)
+                    {
+                        tileScript.UpdateVisual(up, down ,left, right, tl, tr, bl, br);
+                    }
+                }
             }
         }
     }
@@ -157,6 +175,11 @@ public class GridController : MonoBehaviour
     private void OnDestroy()
     {
         UnsubscribeFromEvents();
+
+        if (Swap != null)
+        {
+            Swap.Dispose();
+        }
     }
 
 
