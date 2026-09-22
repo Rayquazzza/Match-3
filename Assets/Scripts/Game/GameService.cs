@@ -52,6 +52,7 @@ public class GameService : MonoBehaviour
 
     private void Start()
     {
+        Application.targetFrameRate = 60;
         gameStateService.ChangeGameState(E_GameState.MENU);
         GameServiceLocator.Get<IMoveService>().OnOutOfMoves += OnMovesDepleted;
     }
