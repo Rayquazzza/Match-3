@@ -87,6 +87,10 @@ public class ExplosionEffect : SpecialEffect
 ## 🛠️ Tool Dev : Unity Level Editor
 Pour accélérer la création de contenu, un outil éditeur personnalisé (`GridEditorWindow`) a été développé pour Unity (`EditorWindow`) :
 
+<p align="center">
+  <img src="Assets/Media/Match 3 Tool Demo.gif" width="600" alt="Démonstration de l'outil" />
+</p>
+
 * **Painting Interactif :** Peinture à la souris (clic gauche pour placer, clic droit pour effacer).
 * **Multi-Layering :** Bascule instantanée entre la couche de base (Bonbons / Obstacles) et la couche de surcouche (`IceOverlay`).
 * **Configuration Dynamique :** Redimensionnement à la volée de la grille (`Width x Height`) et sélection visuelle des bonbons autorisés au tirage.
