@@ -1,4 +1,5 @@
 # 🍭 Match-3 Game Engine & Level Editor (C# / Unity)
+<img src="Media/gameplay.gif" width="600" alt="Démonstration du Gameplay" />
 
 Un moteur de jeu Match-3 complet, modulaire et hautement extensible développé sous Unity en C#. 
 
@@ -89,3 +90,16 @@ Pour accélérer la création de contenu, un outil éditeur personnalisé (`Grid
 * **Configuration Dynamique :** Redimensionnement à la volée de la grille (`Width x Height`) et sélection visuelle des bonbons autorisés au tirage.
 
 [Tools/Level Editor] -> Ouvre l'éditeur visuel synchronisé avec les ScriptableObjects LevelData.
+
+## 🎧 Audio & Feedback Visuel
+
+* **FMOD Integration :** Gestion des événements audio (`SoundEvent`) avec paramètres dynamiques pour augmenter le pitch ou la variation en fonction du niveau de combo (`Combo`).
+* **Propreté Visuelle(`BackgroundTile`):** Adaptation dynamique des bordures et coins de la grille selon la géométrie du niveau (gestion des cases vides/invalides).
+* **Caméra Responsive(`CameraFitter`) :** Calcul automatique du champ de vision et du zoom de la caméra selon le ratio de l'écran et la taille de la grille.
+
+## 🛠️ Stack Technique
+
+* **Moteur :** Unity 2022+ / C#
+* **Tweening :** DOTween (DOTween Pro)
+* **Audio Engine :** FMOD Unity Integration
+* **Architecture :** Service Locator, Observer, Object Pooling, Scriptable Object Data Driven
