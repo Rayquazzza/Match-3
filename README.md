@@ -1,5 +1,5 @@
 # 🍭 Match-3 Game Engine & Level Editor (C# / Unity)
-<img src="Media/gameplay.gif" width="600" alt="Démonstration du Gameplay" />
+<img src="Media/Match3.gif" width="600" alt="Démonstration du Gameplay" />
 
 Un moteur de jeu Match-3 complet, modulaire et hautement extensible développé sous Unity en C#. 
 
